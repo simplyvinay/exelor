@@ -9,10 +9,7 @@ services:
       - "5432:5432"
     volumes:
       - postgresdata:/var/lib/postgresql/data
-      - ./postgresql/conf:/etc/postgresql/
-    environment:
-      POSTGRES_USER: su
-      POSTGRES_PASSWORD: password
+    env_file: Postgres.env
 
 volumes:
   postgresdata:
