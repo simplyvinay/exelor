@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  postgres:
+    build:
+      context: ./
+      dockerfile: Postgres.Dockerfile
+    ports: 
+      - "5432:5432"
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+      - ./postgresql/conf:/etc/postgresql/
+    environment:
+      POSTGRES_USER: su
+      POSTGRES_PASSWORD: password
+
+volumes:
+  postgresdata:
+    external: false # creates a volume if not present when doing docker-compose up
