@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace api_startertemplate
+namespace ApiStarter
 {
     public class Program
     {
