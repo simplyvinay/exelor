@@ -22,9 +22,4 @@ namespace ApiStarter.Domain.Identity
             Archived = false;
         }
     }
-
-    public class UserRole : IdentityUserRole<int> { }
-    public class UserLogin : IdentityUserLogin<int> { }
-    public class RoleClaim : IdentityRoleClaim<int> { }
-    public class UserToken : IdentityUserToken<int> { }
 }
