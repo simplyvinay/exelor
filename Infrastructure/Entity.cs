@@ -9,16 +9,14 @@ namespace ApiStarter.Infrastructure
     {
         int Id { get; }
         public DateTime CreatedAt { get; }
+        public string CreatedBy { get; set; }
         public DateTime UpdatedAt { get; }
-    }
-
-    public interface IArchivableEntity : IEntity
-    {
+        public string UpdatedBy { get; set; }
         bool Archived { get; }
         void Archive();
         void UnArchive();
     }
-
+    
     public class Entity : IEntity
     {
         [JsonIgnore]
@@ -26,11 +24,10 @@ namespace ApiStarter.Infrastructure
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string CreatedBy { get; set; }
         public DateTime UpdatedAt { get; set; }
-    }
+        public string UpdatedBy { get; set; }
 
-    public class ArchivableEntity : Entity, IArchivableEntity
-    {
         public bool Archived { get; set; }
         
         public void Archive()
