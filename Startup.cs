@@ -1,3 +1,4 @@
+using ApiStarter.Infrastructure.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,7 @@ namespace ApiStarter
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddValidationPipeline();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
