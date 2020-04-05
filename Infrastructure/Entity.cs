@@ -8,9 +8,11 @@ namespace ApiStarter.Infrastructure
     public interface IEntity
     {
         int Id { get; }
+        public DateTime CreatedAt { get; }
+        public DateTime UpdatedAt { get; }
     }
 
-    public interface IArchivableEntity
+    public interface IArchivableEntity : IEntity
     {
         bool Archived { get; }
         void Archive();

@@ -1,6 +1,10 @@
+using ApiStarter.Domain;
+using ApiStarter.Domain.Identity;
+using ApiStarter.Infrastructure.Data;
 using ApiStarter.Infrastructure.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,6 +23,14 @@ namespace ApiStarter
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddIdentity<User, Role>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            services
+                .AddEntityFrameworkSqlServer()
+                .AddDbContext<ApplicationDbContext>();
+
             services.AddControllers();
             services.AddValidationPipeline();
         }
@@ -30,13 +42,9 @@ namespace ApiStarter
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
