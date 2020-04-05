@@ -16,5 +16,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.2.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\Authorization\" />
+    <Folder Include="Infrastructure\Validation\" />
+    <Folder Include="Infrastructure\Security\" />
+  </ItemGroup>
+
 
 </Project>
