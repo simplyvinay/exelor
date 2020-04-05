@@ -17,6 +17,10 @@ namespace ApiStarter.Domain.Identity
         public DateTime UpdatedAt { get; }
         public string UpdatedBy { get; set; }
         public bool Archived { get; }
+        public User User { get; set; }
+        public Role Role { get; set; }
+
+
         public void Archive()
         {
             throw new NotImplementedException();

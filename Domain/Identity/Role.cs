@@ -14,6 +14,7 @@ namespace ApiStarter.Domain.Identity
         public DateTime UpdatedAt { get; set; }
         public string UpdatedBy { get; set; }
         public bool Archived { get; set; }
+        public ICollection<UserRole> Users { get; set; } = new HashSet<UserRole>();
         public IEnumerable<Permissions> PermissionsInRole => _permissionsInRole.UnpackPermissions();
 
         public void AddPermissions(ICollection<Permissions> permissions)

@@ -2,6 +2,7 @@ using ApiStarter.Domain;
 using ApiStarter.Domain.Identity;
 using ApiStarter.Infrastructure.Authorization;
 using ApiStarter.Infrastructure.Data;
+using ApiStarter.Infrastructure.Security;
 using ApiStarter.Infrastructure.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,7 @@ namespace ApiStarter
 
             services.AddControllers();
             services.AddValidationPipeline();
+            services.AddJwtAuthentication();
 
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

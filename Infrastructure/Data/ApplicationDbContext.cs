@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ApiStarter.Domain.Identity;
-using ApiStarter.Infrastructure.Authorization;
+using ApiStarter.Infrastructure.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -47,20 +47,22 @@ namespace ApiStarter.Infrastructure.Data
             base.OnModelCreating(builder);
 
             builder.Entity<User>().ToTable("User");
+            
             builder.Entity<Role>().ToTable("Role");
+            builder.Entity<Role>().HasMany(a => a.Users).WithOne(a => a.Role).HasForeignKey(a => a.RoleId);
+            builder.Entity<Role>()
+                .Property("_permissionsInRole")
+                .HasColumnName("PermissionsInRole")
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
             
             builder.Entity<UserRole>()
                 .ToTable("UserRole")
                 .HasKey(r => new {r.UserId, r.RoleId});
-            builder.Entity<UserRole>()
-                .Property("_permissionsInRole")
-                .HasColumnName("PermissionsInRole");
-
+            
             builder.Entity<IdentityUserClaim<int>>().ToTable("UserClaim");
             builder.Entity<IdentityUserLogin<int>>().ToTable("UserLogin");
             builder.Entity<IdentityUserToken<int>>().ToTable("UserToken");
             builder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaim");
-
         }
 
         public override Task<int> SaveChangesAsync(
