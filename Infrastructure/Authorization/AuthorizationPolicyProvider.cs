@@ -29,13 +29,13 @@ namespace ApiStarter.Infrastructure.Authorization
             if (policy == null)
             {
 
-                var permissions = policyName.Substring(PermissionConstant.PolicyPrefix.Length)
+                /*var permissions = policyName.Substring(PermissionConstant.PolicyPrefix.Length)
                     .UnpackFromString(PermissionConstant.PolicyNameSplitBy);
 
                 return new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .AddRequirements(new PermissionRequirement(permissions))
-                    .Build();
+                    .Build();*/
             }
 
             return policy;

@@ -19,6 +19,8 @@ namespace ApiStarter.Infrastructure
     
     public class Entity : IEntity
     {
+        protected Entity() { }
+
         [JsonIgnore]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

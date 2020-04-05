@@ -29,6 +29,7 @@
     <Folder Include="Dto\" />
     <Folder Include="Features\" />
     <Folder Include="Infrastructure\Security\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 

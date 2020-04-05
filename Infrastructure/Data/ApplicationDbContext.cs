@@ -11,7 +11,15 @@ using Microsoft.Extensions.Configuration;
 
 namespace ApiStarter.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User, Role, int>
+    public class ApplicationDbContext : IdentityDbContext<
+        User,
+        Role,
+        int,
+        IdentityUserClaim<int>,
+        UserRole,
+        IdentityUserLogin<int>,
+        IdentityRoleClaim<int>,
+        IdentityUserToken<int>>
     {
         private readonly IConfiguration _configuration;
         private ICurrentUser _currentUser;
@@ -40,11 +48,19 @@ namespace ApiStarter.Infrastructure.Data
 
             builder.Entity<User>().ToTable("User");
             builder.Entity<Role>().ToTable("Role");
+            
+            builder.Entity<UserRole>()
+                .ToTable("UserRole")
+                .HasKey(r => new {r.UserId, r.RoleId});
+            builder.Entity<UserRole>()
+                .Property("_permissionsInRole")
+                .HasColumnName("PermissionsInRole");
+
             builder.Entity<IdentityUserClaim<int>>().ToTable("UserClaim");
             builder.Entity<IdentityUserLogin<int>>().ToTable("UserLogin");
-            builder.Entity<IdentityUserRole<int>>().ToTable("UserRole");
             builder.Entity<IdentityUserToken<int>>().ToTable("UserToken");
             builder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaim");
+
         }
 
         public override Task<int> SaveChangesAsync(
