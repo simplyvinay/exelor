@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ApiStarter.Infrastructure.Security
+namespace ApiStarter.Infrastructure.Auth.Authentication
 {
     public static class JwtService
     {

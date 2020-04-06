@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ApiStarter.Infrastructure.Security
+namespace ApiStarter.Infrastructure.Auth.Authentication
 {
     public class JwtIssuerOptions
     {

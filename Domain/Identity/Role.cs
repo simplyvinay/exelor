@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ApiStarter.Infrastructure;
-using ApiStarter.Infrastructure.Authorization;
+using ApiStarter.Infrastructure.Auth.Authorization;
 
 namespace ApiStarter.Domain.Identity
 {

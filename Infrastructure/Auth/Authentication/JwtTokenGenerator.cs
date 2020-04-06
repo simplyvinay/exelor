@@ -5,10 +5,10 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using ApiStarter.Domain.Identity;
-using ApiStarter.Infrastructure.Authorization;
+using ApiStarter.Infrastructure.Auth.Authorization;
 using Microsoft.Extensions.Options;
 
-namespace ApiStarter.Infrastructure.Security
+namespace ApiStarter.Infrastructure.Auth.Authentication
 {
     public interface IJwtTokenGenerator
     {

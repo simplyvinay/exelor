@@ -1,4 +1,4 @@
-﻿namespace ApiStarter.Infrastructure.Authorization
+﻿namespace ApiStarter.Infrastructure.Auth.Authorization
 {
     public class PermissionConstant
     {

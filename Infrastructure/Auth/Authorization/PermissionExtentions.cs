@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ApiStarter.Domain.Identity;
 
-namespace ApiStarter.Infrastructure.Authorization
+namespace ApiStarter.Infrastructure.Auth.Authorization
 {
     public static class PermissionPacker
     {

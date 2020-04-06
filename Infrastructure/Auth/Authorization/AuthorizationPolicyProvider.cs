@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
-namespace ApiStarter.Infrastructure.Authorization
+namespace ApiStarter.Infrastructure.Auth.Authorization
 {
     public class AuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider
     {

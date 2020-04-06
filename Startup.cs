@@ -1,9 +1,10 @@
+using ApiStarter.Infrastructure.Auth.Authentication;
 using ApiStarter.Infrastructure.Data;
-using ApiStarter.Infrastructure.Security;
 using ApiStarter.Infrastructure.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,9 +27,12 @@ namespace ApiStarter
                 .AddDbContext<ApplicationDbContext>();
             
             services.Configure<JwtSettings>(Configuration.GetSection(typeof(JwtSettings).Name));
+            services.Configure<PasswordHasherSettings>(Configuration.GetSection(typeof(PasswordHasherSettings).Name));
+
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             services.AddControllers();
             services.AddValidationPipeline();

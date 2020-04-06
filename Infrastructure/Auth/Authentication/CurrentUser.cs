@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace ApiStarter.Infrastructure.Security
+namespace ApiStarter.Infrastructure.Auth.Authentication
 {
     public interface ICurrentUser
     {

@@ -7,7 +7,7 @@ using ApiStarter.Infrastructure.ErrorHandling;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace ApiStarter.Infrastructure.Security
+namespace ApiStarter.Infrastructure.Auth.Authentication
 {
     public interface IAuthenticationService
     {
