@@ -1,6 +1,8 @@
 using ApiStarter.Infrastructure.Auth.Authentication;
+using ApiStarter.Infrastructure.Auth.Authorization;
 using ApiStarter.Infrastructure.Data;
 using ApiStarter.Infrastructure.Validation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -33,6 +35,8 @@ namespace ApiStarter
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
+            services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
 
             services.AddControllers();
             services.AddValidationPipeline();

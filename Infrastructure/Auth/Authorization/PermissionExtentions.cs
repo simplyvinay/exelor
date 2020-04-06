@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using ApiStarter.Domain.Identity;
 
 namespace ApiStarter.Infrastructure.Auth.Authorization
 {
-    public static class PermissionPacker
+    public static class PermissionExtensions
     {
-        public static string PackPermissions(this IEnumerable<Permissions> permissions)
+        public static string PackPermissions(
+            this IEnumerable<Permissions> permissions)
         {
-            return permissions.Aggregate("", (s, permission) => s + (char)permission);
+            return permissions.Aggregate(
+                "",
+                (
+                        s,
+                        permission) => s + (char) permission);
         }
 
-        public static IEnumerable<Permissions> UnpackPermissions(this string packedPermissions)
+        public static IEnumerable<Permissions> UnpackPermissions(
+            this string packedPermissions)
         {
             if (packedPermissions == null)
                 throw new ArgumentNullException(nameof(packedPermissions));
@@ -20,6 +27,29 @@ namespace ApiStarter.Infrastructure.Auth.Authorization
             {
                 yield return ((Permissions) character);
             }
+        }
+
+        public static bool ThisPermissionIsAllowed(
+            this string packedPermissions,
+            string permissionName)
+        {
+            var usersPermissions = packedPermissions.UnpackPermissions().ToArray();
+
+            if (!Enum.TryParse(
+                permissionName,
+                true,
+                out Permissions permissionToCheck))
+                throw new InvalidEnumArgumentException(
+                    $"{permissionName} could not be converted to a {nameof(Permissions)}.");
+
+            return usersPermissions.UserHasThisPermission(permissionToCheck);
+        }
+
+        public static bool UserHasThisPermission(
+            this Permissions[] usersPermissions,
+            Permissions permissionToCheck)
+        {
+            return usersPermissions.Contains(permissionToCheck) || usersPermissions.Contains(Permissions.SuperUser);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
@@ -18,24 +17,17 @@ namespace ApiStarter.Infrastructure.Auth.Authorization
         public override async Task<AuthorizationPolicy> GetPolicyAsync(
             string policyName)
         {
-            AuthorizationPolicy policy = null;
-            if (!policyName.StartsWith(
-                PermissionConstant.PolicyPrefix,
-                StringComparison.OrdinalIgnoreCase))
-            {
-                policy = await base.GetPolicyAsync(policyName);
-            }
+            var policy = await base.GetPolicyAsync(policyName);
 
             if (policy == null)
             {
+                policy = new AuthorizationPolicyBuilder()
+                    .AddRequirements(new PermissionRequirement(policyName))
+                    .Build();
 
-                /*var permissions = policyName.Substring(PermissionConstant.PolicyPrefix.Length)
-                    .UnpackFromString(PermissionConstant.PolicyNameSplitBy);
-
-                return new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .AddRequirements(new PermissionRequirement(permissions))
-                    .Build();*/
+                _options.AddPolicy(
+                    policyName,
+                    policy);
             }
 
             return policy;
