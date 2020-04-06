@@ -1,12 +1,17 @@
 using System.Collections.Generic;
+using Exelor.Infrastructure;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Auth.Authorization;
 using Exelor.Infrastructure.Data;
+using Exelor.Infrastructure.ErrorHandling;
 using Exelor.Infrastructure.Validation;
+using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,6 +35,25 @@ namespace Exelor
         {
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<ApplicationDbContext>();
+
+            services.AddMediatR(typeof(Startup));
+
+            //hook up validation into MediatR pipeline
+            services.AddTransient(
+                typeof(IPipelineBehavior<,>),
+                typeof(ValidationPipelineBehavior<,>));
+
+            //attach the the model validator and define the api grouping convention
+            //setup fluent validation for the running assembly
+            services.AddMvc(
+                    options =>
+                    {
+                        options.Filters.Add<ValidateModelFilter>();
+                        options.Conventions.Add(new GroupByApiRootConvention());
+                    })
+                .AddJsonOptions(opt => { opt.JsonSerializerOptions.IgnoreNullValues = true; })
+                .AddFluentValidation(cfg => { cfg.RegisterValidatorsFromAssemblyContaining<Startup>(); })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.Configure<JwtSettings>(Configuration.GetSection(typeof(JwtSettings).Name));
             services.Configure<PasswordHasherSettings>(Configuration.GetSection(typeof(PasswordHasherSettings).Name));
@@ -98,6 +122,8 @@ namespace Exelor
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseErrorHandlingMiddleware();
 
             //change this allow only specific origins
             app.UseCors(
