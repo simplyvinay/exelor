@@ -1,13 +1,9 @@
-using ApiStarter.Domain;
-using ApiStarter.Domain.Identity;
-using ApiStarter.Infrastructure.Authorization;
 using ApiStarter.Infrastructure.Data;
 using ApiStarter.Infrastructure.Security;
 using ApiStarter.Infrastructure.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,19 +22,17 @@ namespace ApiStarter
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
-
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<ApplicationDbContext>();
+            
+            services.Configure<JwtSettings>(Configuration.GetSection(typeof(JwtSettings).Name));
+            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            services.AddScoped<ICurrentUser, CurrentUser>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddControllers();
             services.AddValidationPipeline();
             services.AddJwtAuthentication();
-
-            services.AddScoped<ICurrentUser, CurrentUser>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

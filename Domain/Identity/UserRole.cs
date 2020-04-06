@@ -1,34 +1,20 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using ApiStarter.Infrastructure;
-using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json;
-
-namespace ApiStarter.Domain.Identity
+﻿namespace ApiStarter.Domain.Identity
 {
-    public class UserRole : IdentityUserRole<int>, IEntity
+    public class UserRole 
     {
-        [JsonIgnore]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; }
-        public DateTime CreatedAt { get; }
-        public string CreatedBy { get; set; }
-        public DateTime UpdatedAt { get; }
-        public string UpdatedBy { get; set; }
-        public bool Archived { get; }
+        private UserRole() { }
+
+        public UserRole(
+            User user,
+            Role role)
+        {
+            User = user;
+            Role = role;
+        }
+
+        public int UserId { get; set; }
         public User User { get; set; }
+        public int RoleId { get; set; }
         public Role Role { get; set; }
-
-
-        public void Archive()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UnArchive()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

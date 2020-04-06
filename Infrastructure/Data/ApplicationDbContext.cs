@@ -4,22 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using ApiStarter.Domain.Identity;
 using ApiStarter.Infrastructure.Security;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace ApiStarter.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<
-        User,
-        Role,
-        int,
-        IdentityUserClaim<int>,
-        UserRole,
-        IdentityUserLogin<int>,
-        IdentityRoleClaim<int>,
-        IdentityUserToken<int>>
+    public class ApplicationDbContext : DbContext
     {
         private readonly IConfiguration _configuration;
         private ICurrentUser _currentUser;
@@ -34,6 +24,11 @@ namespace ApiStarter.Infrastructure.Data
             _currentUser = currentUser;
         }
 
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        //public DbSet<RefreshToken> RefreshTokens { get; set; }
+
         protected override void OnConfiguring(
             DbContextOptionsBuilder optionsBuilder)
         {
@@ -44,12 +39,21 @@ namespace ApiStarter.Infrastructure.Data
         protected override void OnModelCreating(
             ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
+            var navigation = builder.Entity<User>()
+                .Metadata.FindNavigation(nameof(User.RefreshTokens));
+            navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
 
-            builder.Entity<User>().ToTable("User");
-            
-            builder.Entity<Role>().ToTable("Role");
-            builder.Entity<Role>().HasMany(a => a.Users).WithOne(a => a.Role).HasForeignKey(a => a.RoleId);
+            builder.Entity<RefreshToken>()
+                .HasOne(d => d.User)
+                .WithMany(e => e.RefreshTokens)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);;
+
+            builder.Entity<Role>()
+                .HasMany(a => a.Users)
+                .WithOne(a => a.Role)
+                .HasForeignKey(a => a.RoleId);
+
             builder.Entity<Role>()
                 .Property("_permissionsInRole")
                 .HasColumnName("PermissionsInRole")
@@ -58,11 +62,6 @@ namespace ApiStarter.Infrastructure.Data
             builder.Entity<UserRole>()
                 .ToTable("UserRole")
                 .HasKey(r => new {r.UserId, r.RoleId});
-            
-            builder.Entity<IdentityUserClaim<int>>().ToTable("UserClaim");
-            builder.Entity<IdentityUserLogin<int>>().ToTable("UserLogin");
-            builder.Entity<IdentityUserToken<int>>().ToTable("UserToken");
-            builder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaim");
         }
 
         public override Task<int> SaveChangesAsync(

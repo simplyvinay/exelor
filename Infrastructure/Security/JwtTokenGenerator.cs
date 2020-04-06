@@ -47,7 +47,7 @@ namespace ApiStarter.Infrastructure.Security
                     new DateTimeOffset(_jwtOptions.IssuedAt).ToUnixTimeSeconds().ToString(),
                     ClaimValueTypes.Integer64),
                 new Claim(
-                    "Permission",
+                    PermissionClaimName.Permissions,
                     permissions.PackPermissions()),
             };
             var jwt = new JwtSecurityToken(
