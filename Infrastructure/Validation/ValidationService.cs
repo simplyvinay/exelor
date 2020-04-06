@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ApiStarter.Infrastructure.Validation
+namespace Exelor.Infrastructure.Validation
 {
     public static class ValidationService
     {

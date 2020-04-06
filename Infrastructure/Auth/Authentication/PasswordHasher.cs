@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 
-namespace ApiStarter.Infrastructure.Auth.Authentication
+namespace Exelor.Infrastructure.Auth.Authentication
 {
     public interface IPasswordHasher
     {

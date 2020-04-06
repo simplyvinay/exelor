@@ -1,4 +1,4 @@
-﻿namespace ApiStarter.Infrastructure.Auth.Authorization
+﻿namespace Exelor.Infrastructure.Auth.Authorization
 {
     public struct PermissionClaimName
     {

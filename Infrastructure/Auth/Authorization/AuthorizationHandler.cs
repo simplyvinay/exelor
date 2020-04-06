@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ApiStarter.Infrastructure.Auth.Authorization
+namespace Exelor.Infrastructure.Auth.Authorization
 {
     public class AuthorizationHandler : AuthorizationHandler<PermissionRequirement>
     {

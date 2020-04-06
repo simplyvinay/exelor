@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace ApiStarter.Domain.Identity
+namespace Exelor.Domain.Identity
 {
     public enum Permissions : int
     {

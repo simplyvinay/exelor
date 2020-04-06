@@ -1,7 +1,7 @@
-using ApiStarter.Infrastructure.Auth.Authentication;
-using ApiStarter.Infrastructure.Auth.Authorization;
-using ApiStarter.Infrastructure.Data;
-using ApiStarter.Infrastructure.Validation;
+using Exelor.Infrastructure.Auth.Authentication;
+using Exelor.Infrastructure.Auth.Authorization;
+using Exelor.Infrastructure.Data;
+using Exelor.Infrastructure.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace ApiStarter
+namespace Exelor
 {
     public class Startup
     {

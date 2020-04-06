@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using ApiStarter.Domain.Identity;
+using Exelor.Domain.Identity;
 
-namespace ApiStarter.Infrastructure.Auth.Authorization
+namespace Exelor.Infrastructure.Auth.Authorization
 {
     public static class PermissionExtensions
     {

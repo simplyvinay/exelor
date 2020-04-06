@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace ApiStarter.Infrastructure.ErrorHandling
+namespace Exelor.Infrastructure.ErrorHandling
 {
     public class ErrorHandlingMiddleware
     {

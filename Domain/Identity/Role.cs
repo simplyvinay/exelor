@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using ApiStarter.Infrastructure;
-using ApiStarter.Infrastructure.Auth.Authorization;
+using Exelor.Infrastructure;
+using Exelor.Infrastructure.Auth.Authorization;
 
-namespace ApiStarter.Domain.Identity
+namespace Exelor.Domain.Identity
 {
     public class Role : Entity
     {

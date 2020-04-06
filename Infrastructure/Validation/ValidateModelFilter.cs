@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 
-namespace ApiStarter.Infrastructure.Validation
+namespace Exelor.Infrastructure.Validation
 {
     public class ValidateModelFilter : IActionFilter
     {

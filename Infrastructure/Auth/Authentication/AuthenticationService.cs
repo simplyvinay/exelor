@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using ApiStarter.Domain.Identity;
-using ApiStarter.Infrastructure.Data;
-using ApiStarter.Infrastructure.ErrorHandling;
+using Exelor.Domain.Identity;
+using Exelor.Infrastructure.Data;
+using Exelor.Infrastructure.ErrorHandling;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace ApiStarter.Infrastructure.Auth.Authentication
+namespace Exelor.Infrastructure.Auth.Authentication
 {
     public interface IAuthenticationService
     {

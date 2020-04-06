@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ApiStarter.Domain.Identity;
-using ApiStarter.Infrastructure.Auth.Authentication;
+using Exelor.Domain.Identity;
+using Exelor.Infrastructure.Auth.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace ApiStarter.Infrastructure.Data
+namespace Exelor.Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
     {

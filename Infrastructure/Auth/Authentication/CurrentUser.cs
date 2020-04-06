@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace ApiStarter.Infrastructure.Auth.Authentication
+namespace Exelor.Infrastructure.Auth.Authentication
 {
     public interface ICurrentUser
     {

@@ -1,7 +1,7 @@
 ﻿using System;
-using ApiStarter.Infrastructure;
+using Exelor.Infrastructure;
 
-namespace ApiStarter.Domain.Identity
+namespace Exelor.Domain.Identity
 {
     public class RefreshToken : Entity
     {

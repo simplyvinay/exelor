@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace ApiStarter.Infrastructure.ErrorHandling
+namespace Exelor.Infrastructure.ErrorHandling
 {
     public class HttpException : Exception
     {

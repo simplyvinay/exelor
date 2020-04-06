@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>ApiStarter</RootNamespace>
+    <RootNamespace>Exelor</RootNamespace>
+    <AssemblyName>Exelor</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace ApiStarter.Domain.Identity
+﻿namespace Exelor.Domain.Identity
 {
     public class UserRole 
     {

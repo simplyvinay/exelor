@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ApiStarter.Infrastructure.Auth.Authentication
+namespace Exelor.Infrastructure.Auth.Authentication
 {
     public static class JwtService
     {

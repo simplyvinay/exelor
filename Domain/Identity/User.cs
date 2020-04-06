@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ApiStarter.Infrastructure;
+using Exelor.Infrastructure;
 using Newtonsoft.Json;
 
-namespace ApiStarter.Domain.Identity
+namespace Exelor.Domain.Identity
 {
     public class User : Entity
     {

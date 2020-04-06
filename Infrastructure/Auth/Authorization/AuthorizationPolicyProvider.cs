@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
-namespace ApiStarter.Infrastructure.Auth.Authorization
+namespace Exelor.Infrastructure.Auth.Authorization
 {
     public class AuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider
     {

@@ -4,11 +4,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using ApiStarter.Domain.Identity;
-using ApiStarter.Infrastructure.Auth.Authorization;
+using Exelor.Domain.Identity;
+using Exelor.Infrastructure.Auth.Authorization;
 using Microsoft.Extensions.Options;
 
-namespace ApiStarter.Infrastructure.Auth.Authentication
+namespace Exelor.Infrastructure.Auth.Authentication
 {
     public interface IJwtTokenGenerator
     {
