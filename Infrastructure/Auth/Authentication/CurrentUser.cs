@@ -18,6 +18,6 @@ namespace Exelor.Infrastructure.Auth.Authentication
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string Id => _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+        public string Id => _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
     }
 }

@@ -11,11 +11,7 @@ namespace Exelor.Infrastructure.Auth.Authorization
         public static string PackPermissions(
             this IEnumerable<Permissions> permissions)
         {
-            return permissions.Aggregate(
-                "",
-                (
-                        s,
-                        permission) => s + (char) permission);
+            return permissions.Aggregate("", (s, permission) => s + (char) permission);
         }
 
         public static IEnumerable<Permissions> UnpackPermissions(

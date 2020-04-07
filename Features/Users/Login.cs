@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Exelor.Domain.Identity;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Data;
 using Exelor.Infrastructure.ErrorHandling;
@@ -86,10 +88,19 @@ namespace Exelor.Features.Users
                     refreshToken,
                     user.Id);
 
-                var roles = _context.UserRoles.AsNoTracking().Where(x => x.User == user);
+                var roles = _context.UserRoles
+                    .Include(x => x.Role)
+                    .Where(x => x.User == user);
+
+                var permissions = new List<Permissions>();
+                foreach (var userRole in roles)
+                {
+                    permissions.AddRange(userRole.Role.PermissionsInRole.ToList());
+                }
+
                 var token = await _jwtTokenGenerator.CreateToken(
                     user.Id.ToString(),
-                    roles.SelectMany(x => x.Role.PermissionsInRole));
+                    permissions);
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return new UserDto(

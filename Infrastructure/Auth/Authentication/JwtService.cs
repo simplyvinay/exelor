@@ -37,13 +37,12 @@ namespace Exelor.Infrastructure.Auth.Authentication
             };
 
             services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    
-                })
+                .AddAuthentication(
+                    options =>
+                    {
+                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    })
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = tokenValidationParameters;
@@ -74,7 +73,7 @@ namespace Exelor.Infrastructure.Auth.Authentication
                             return Task.CompletedTask;
                         }
                     };
-                });
+                });            
         }
     }
 }

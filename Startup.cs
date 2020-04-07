@@ -7,11 +7,13 @@ using Exelor.Infrastructure.ErrorHandling;
 using Exelor.Infrastructure.Validation;
 using FluentValidation.AspNetCore;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -65,10 +67,17 @@ namespace Exelor
             services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
             services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
 
-            services.AddControllers();
+            services.AddControllers(config =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+            });
+            services.AddJwtAuthentication();
             services.AddValidationPipeline();
             services.AddCors();
-            services.AddJwtAuthentication();
 
             //Hook up swagger
             services.AddSwaggerGen(
@@ -151,6 +160,7 @@ namespace Exelor
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
