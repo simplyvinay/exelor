@@ -117,11 +117,11 @@ namespace Exelor.Infrastructure.Data
         {
             var createdAt = DateTime.Now;
             var salt = Guid.NewGuid().ToByteArray();
-            var user = new User(
+            var user1 = new User(
                 "John",
                 "Doe",
-                "test@demo.com",
-                "test@demo.com",
+                "john@demo.com",
+                "john",
                 string.Empty,
                 _passwordHasher.Hash(
                     "test",
@@ -135,7 +135,7 @@ namespace Exelor.Infrastructure.Data
                 Archived = false
             };
             
-            var role = new
+            var role1 = new
             {
                 Id = 1,
                 CreatedAt = createdAt,
@@ -153,8 +153,47 @@ namespace Exelor.Infrastructure.Data
                 }
             );
 
-            builder.Entity<User>().HasData(user);
-            builder.Entity<Role>().HasData(role);
+            builder.Entity<User>().HasData(user1);
+            builder.Entity<Role>().HasData(role1);
+            
+            var user2 = new User(
+                "Jane",
+                "Doe",
+                "jane@demo.com",
+                "jane",
+                string.Empty,
+                _passwordHasher.Hash(
+                    "test",
+                    salt),
+                salt
+            )
+            {
+                Id = 2,
+                CreatedAt = createdAt,
+                UpdatedAt = createdAt,
+                Archived = false
+            };
+            
+            var role2 = new
+            {
+                Id = 2,
+                CreatedAt = createdAt,
+                UpdatedAt = createdAt,
+                Archived = false,
+                Name = "Base+ User",
+                _permissionsInRole = new List<Permissions>{ Permissions.EditUsers }.PackPermissions()
+            };
+            
+            builder.Entity<UserRole>().HasData(
+                new
+                {
+                    UserId = 2,
+                    RoleId = 2
+                }
+            );
+
+            builder.Entity<User>().HasData(user2);
+            builder.Entity<Role>().HasData(role2);
         }
     }
 }

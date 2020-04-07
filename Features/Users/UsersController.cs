@@ -21,7 +21,7 @@ namespace Exelor.Features.Users
         }
 
         [HttpGet]
-        [HasPermission(Permissions.ReadUsers)]
+        [HasPermission(Permissions.ReadUsers, Permissions.EditUsers)]
         public string Get()
         {
             _ = _currentUser.Id;

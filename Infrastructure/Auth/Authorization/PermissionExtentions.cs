@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Exelor.Domain.Identity;
 
@@ -25,27 +24,22 @@ namespace Exelor.Infrastructure.Auth.Authorization
             }
         }
 
-        public static bool ThisPermissionIsAllowed(
+        public static bool ThesePermissionsAreAllowed(
             this string packedPermissions,
-            string permissionName)
+            IEnumerable<string> permissions)
         {
             var usersPermissions = packedPermissions.UnpackPermissions().ToArray();
-
-            if (!Enum.TryParse(
-                permissionName,
-                true,
-                out Permissions permissionToCheck))
-                throw new InvalidEnumArgumentException(
-                    $"{permissionName} could not be converted to a {nameof(Permissions)}.");
-
-            return usersPermissions.UserHasThisPermission(permissionToCheck);
+            return usersPermissions.UserHasThesePermission(permissions.Select(Enum.Parse<Permissions>));
         }
 
-        public static bool UserHasThisPermission(
+
+        public static bool UserHasThesePermission(
             this Permissions[] usersPermissions,
-            Permissions permissionToCheck)
+            IEnumerable<Permissions> permissionsToCheck)
         {
-            return usersPermissions.Contains(permissionToCheck) || usersPermissions.Contains(Permissions.SuperUser);
+            return usersPermissions.Select(x => x)
+                .Intersect(permissionsToCheck)
+                .Any() || usersPermissions.Contains(Permissions.SuperUser);
         }
     }
 }

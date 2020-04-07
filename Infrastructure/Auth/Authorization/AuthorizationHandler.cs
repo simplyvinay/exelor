@@ -4,19 +4,19 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Exelor.Infrastructure.Auth.Authorization
 {
-    public class AuthorizationHandler : AuthorizationHandler<PermissionRequirement>
+    public class AuthorizationHandler : AuthorizationHandler<PermissionsRequirement>
     {
         protected override Task HandleRequirementAsync(
             AuthorizationHandlerContext context,
-            PermissionRequirement requirement)
+            PermissionsRequirement requirement)
         {
             var permissionsClaim =
                 context.User.Claims.SingleOrDefault(c => c.Type == PermissionClaimName.Permissions);
-            
+
             if (permissionsClaim == null)
                 return Task.CompletedTask;
 
-            if (permissionsClaim.Value.ThisPermissionIsAllowed(requirement.Permission))
+            if (permissionsClaim.Value.ThesePermissionsAreAllowed(requirement.Permissions))
                 context.Succeed(requirement);
 
             return Task.CompletedTask;

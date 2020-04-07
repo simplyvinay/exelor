@@ -22,7 +22,7 @@ namespace Exelor.Infrastructure.Auth.Authorization
             if (policy == null)
             {
                 policy = new AuthorizationPolicyBuilder()
-                    .AddRequirements(new PermissionRequirement(policyName))
+                    .AddRequirements(new PermissionsRequirement(policyName.Split('|')))
                     .Build();
 
                 _options.AddPolicy(

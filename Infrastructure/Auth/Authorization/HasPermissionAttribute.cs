@@ -7,7 +7,10 @@ namespace Exelor.Infrastructure.Auth.Authorization
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, Inherited = false)]
     public class HasPermissionAttribute : AuthorizeAttribute
     {
-        public HasPermissionAttribute(Permissions permission) : base(permission.ToString())
-        { }
+        public HasPermissionAttribute(
+            params Permissions[] permissions)
+        {
+            Policy = string.Join("|", permissions);
+        }
     }
 }
