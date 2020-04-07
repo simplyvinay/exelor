@@ -14,6 +14,7 @@ namespace Exelor.Infrastructure.Auth.Authentication
     {
         Task<string> CreateToken(
             string userId,
+            string email,
             IEnumerable<Permissions> permissions);
 
         string GenerateRefreshToken(
@@ -22,16 +23,17 @@ namespace Exelor.Infrastructure.Auth.Authentication
 
     public class JwtTokenGenerator : IJwtTokenGenerator
     {
-        private readonly JwtIssuerOptions _jwtOptions;
+        private readonly JwtSettings _jwtSettings;
 
         public JwtTokenGenerator(
-            IOptions<JwtIssuerOptions> jwtOptions)
+            IOptions<JwtSettings> jwtOptions)
         {
-            _jwtOptions = jwtOptions.Value;
+            _jwtSettings = jwtOptions.Value;
         }
 
         public async Task<string> CreateToken(
             string userId,
+            string email,
             IEnumerable<Permissions> permissions)
         {
             var claims = new[]
@@ -40,23 +42,26 @@ namespace Exelor.Infrastructure.Auth.Authentication
                     JwtRegisteredClaimNames.Sub,
                     userId),
                 new Claim(
+                    JwtRegisteredClaimNames.Email,
+                    email),
+                new Claim(
                     JwtRegisteredClaimNames.Jti,
-                    await _jwtOptions.JtiGenerator()),
+                    await _jwtSettings.JtiGenerator()),
                 new Claim(
                     JwtRegisteredClaimNames.Iat,
-                    new DateTimeOffset(_jwtOptions.IssuedAt).ToUnixTimeSeconds().ToString(),
+                    new DateTimeOffset(_jwtSettings.IssuedAt).ToUnixTimeSeconds().ToString(),
                     ClaimValueTypes.Integer64),
                 new Claim(
                     PermissionClaimName.Permissions,
                     permissions.PackPermissions()),
             };
             var jwt = new JwtSecurityToken(
-                _jwtOptions.Issuer,
-                _jwtOptions.Audience,
+                _jwtSettings.Issuer,
+                _jwtSettings.Audience,
                 claims,
-                _jwtOptions.NotBefore,
-                _jwtOptions.Expiration,
-                _jwtOptions.SigningCredentials);
+                _jwtSettings.NotBefore,
+                _jwtSettings.Expiration,
+                _jwtSettings.SigningCredentials);
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }

@@ -100,6 +100,7 @@ namespace Exelor.Features.Users
 
                 var token = await _jwtTokenGenerator.CreateToken(
                     user.Id.ToString(),
+                    user.Email,
                     permissions);
                 await _context.SaveChangesAsync(cancellationToken);
 

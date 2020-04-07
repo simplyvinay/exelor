@@ -16,14 +16,6 @@ namespace Exelor.Infrastructure.Auth.Authentication
 
             var settings = services.BuildServiceProvider().GetService<IOptions<JwtSettings>>();
 
-            services.Configure<JwtIssuerOptions>(
-                options =>
-                {
-                    options.Issuer = settings.Value.Issuer;
-                    options.Audience = settings.Value.Audience;
-                    options.SigningCredentials = settings.Value.SigningCredentials;
-                });
-
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
