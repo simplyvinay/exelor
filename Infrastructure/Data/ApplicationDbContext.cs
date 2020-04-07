@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Exelor.Domain.Identity;
 using Exelor.Infrastructure.Auth.Authentication;
+using Exelor.Infrastructure.Auth.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -12,16 +14,19 @@ namespace Exelor.Infrastructure.Data
     public class ApplicationDbContext : DbContext
     {
         private readonly IConfiguration _configuration;
-        private ICurrentUser _currentUser;
+        private readonly ICurrentUser _currentUser;
+        private readonly IPasswordHasher _passwordHasher;
 
         public ApplicationDbContext(
             DbContextOptions options,
             IConfiguration configuration,
-            ICurrentUser currentUser)
+            ICurrentUser currentUser,
+            IPasswordHasher passwordHasher)
             : base(options)
         {
             _configuration = configuration;
             _currentUser = currentUser;
+            _passwordHasher = passwordHasher;
         }
 
         public DbSet<User> Users { get; set; }
@@ -62,6 +67,8 @@ namespace Exelor.Infrastructure.Data
             builder.Entity<UserRole>()
                 .ToTable("UserRole")
                 .HasKey(r => new {r.UserId, r.RoleId});
+
+            SeedData(builder);
         }
 
         public override Task<int> SaveChangesAsync(
@@ -102,6 +109,52 @@ namespace Exelor.Infrastructure.Data
                     entity.UpdatedAt = now;
                 }
             }
+        }
+
+
+        private void SeedData(
+            ModelBuilder builder)
+        {
+            var createdAt = DateTime.Now;
+            var salt = Guid.NewGuid().ToByteArray();
+            var user = new User(
+                "John",
+                "Doe",
+                "test@demo.com",
+                "test@demo.com",
+                string.Empty,
+                _passwordHasher.Hash(
+                    "test",
+                    salt),
+                salt
+            )
+            {
+                Id = 1,
+                CreatedAt = createdAt,
+                UpdatedAt = createdAt,
+                Archived = false
+            };
+            
+            var role = new
+            {
+                Id = 1,
+                CreatedAt = createdAt,
+                UpdatedAt = createdAt,
+                Archived = false,
+                Name = "Base User",
+                _permissionsInRole = new List<Permissions>{ Permissions.ReadUsers }.PackPermissions()
+            };
+            
+            builder.Entity<UserRole>().HasData(
+                new
+                {
+                    UserId = 1,
+                    RoleId = 1
+                }
+            );
+
+            builder.Entity<User>().HasData(user);
+            builder.Entity<Role>().HasData(role);
         }
     }
 }

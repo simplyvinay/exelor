@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Exelor.Infrastructure;
 using Exelor.Infrastructure.Auth.Authorization;
 
@@ -10,12 +9,12 @@ namespace Exelor.Domain.Identity
         private string _permissionsInRole;
 
         public Role(
-            DateTime name)
+            string name)
         {
             Name = name;
         }
 
-        public DateTime Name { get; set; }
+        public string Name { get; set; }
         public ICollection<UserRole> Users { get; set; } = new HashSet<UserRole>();
         public IEnumerable<Permissions> PermissionsInRole => _permissionsInRole.UnpackPermissions();
 
