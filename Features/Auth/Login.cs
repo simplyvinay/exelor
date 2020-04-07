@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Exelor.Domain.Identity;
+using Exelor.Features.Users;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Data;
 using Exelor.Infrastructure.ErrorHandling;
@@ -11,7 +12,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Exelor.Features.Users
+namespace Exelor.Features.Auth
 {
     public class Login
     {

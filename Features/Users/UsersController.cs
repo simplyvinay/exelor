@@ -11,29 +11,20 @@ namespace Exelor.Features.Users
     [Route("api/users")]
     public class UsersController
     {
-        private readonly IMediator _mediator;
-        private ICurrentUser _currentUser;
+        private readonly ICurrentUser _currentUser;
 
         public UsersController(
             IMediator mediator,
             ICurrentUser currentUser)
         {
-            _mediator = mediator;
             _currentUser = currentUser;
-        }
-
-        [AllowAnonymous]
-        [HttpPost("login")]
-        public async Task<UserDto> Login(
-            [FromBody] Login.Command command)
-        {
-            return await _mediator.Send(command);
         }
 
         [HttpGet]
         [HasPermission(Permissions.ReadUsers)]
         public string Get()
         {
+            _ = _currentUser.Id;
             return "User Listing";
         }
         

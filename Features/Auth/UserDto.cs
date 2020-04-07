@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Exelor.Features.Users
+namespace Exelor.Features.Auth
 {
     public class UserDto
     {
