@@ -4,7 +4,7 @@ using Microsoft.OpenApi.Models;
 
 namespace Exelor.Infrastructure
 {
-    public static class SwaggerService 
+    public static class SwaggerRegistry 
     {
         public static IServiceCollection AddSwagger(
             this IServiceCollection services)

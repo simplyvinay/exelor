@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Exelor.Infrastructure
 {
-    public static class WebService
+    public static class WebRegistry
     {
         public static IServiceCollection AddWeb(
             this IServiceCollection services)

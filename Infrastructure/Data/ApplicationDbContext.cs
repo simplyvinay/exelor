@@ -7,27 +7,23 @@ using Exelor.Domain.Identity;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Auth.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Exelor.Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        private readonly IConfiguration _configuration;
         private readonly ICurrentUser _currentUser;
         private readonly IPasswordHasher _passwordHasher;
-        private readonly ILoggerFactory _loggerFactory; 
+        private readonly ILoggerFactory _loggerFactory;
 
         public ApplicationDbContext(
             DbContextOptions options,
-            IConfiguration configuration,
             ICurrentUser currentUser,
             IPasswordHasher passwordHasher,
             ILoggerFactory loggerFactory)
             : base(options)
         {
-            _configuration = configuration;
             _currentUser = currentUser;
             _passwordHasher = passwordHasher;
             _loggerFactory = loggerFactory;
@@ -41,9 +37,7 @@ namespace Exelor.Infrastructure.Data
         protected override void OnConfiguring(
             DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
             optionsBuilder.UseLoggerFactory(_loggerFactory);
-            //optionsBuilder.UseNpgsql(_configuration.GetConnectionString("DefaultConnection"));
         }
 
         protected override void OnModelCreating(
@@ -57,7 +51,8 @@ namespace Exelor.Infrastructure.Data
                 .HasOne(d => d.User)
                 .WithMany(e => e.RefreshTokens)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);;
+                .OnDelete(DeleteBehavior.Cascade);
+            ;
 
             builder.Entity<Role>()
                 .HasMany(a => a.Users)
@@ -68,7 +63,7 @@ namespace Exelor.Infrastructure.Data
                 .Property("_permissionsInRole")
                 .HasColumnName("PermissionsInRole")
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
-            
+
             builder.Entity<UserRole>()
                 .ToTable("UserRole")
                 .HasKey(r => new {r.UserId, r.RoleId});
@@ -139,7 +134,7 @@ namespace Exelor.Infrastructure.Data
                 UpdatedAt = createdAt,
                 Archived = false
             };
-            
+
             var role1 = new
             {
                 Id = 1,
@@ -147,9 +142,9 @@ namespace Exelor.Infrastructure.Data
                 UpdatedAt = createdAt,
                 Archived = false,
                 Name = "Base User",
-                _permissionsInRole = new List<Permissions>{ Permissions.ReadUsers }.PackPermissions()
+                _permissionsInRole = new List<Permissions> {Permissions.ReadUsers}.PackPermissions()
             };
-            
+
             builder.Entity<UserRole>().HasData(
                 new
                 {
@@ -160,7 +155,7 @@ namespace Exelor.Infrastructure.Data
 
             builder.Entity<User>().HasData(user1);
             builder.Entity<Role>().HasData(role1);
-            
+
             var user2 = new User(
                 "Jane",
                 "Doe",
@@ -178,7 +173,7 @@ namespace Exelor.Infrastructure.Data
                 UpdatedAt = createdAt,
                 Archived = false
             };
-            
+
             var role2 = new
             {
                 Id = 2,
@@ -186,9 +181,9 @@ namespace Exelor.Infrastructure.Data
                 UpdatedAt = createdAt,
                 Archived = false,
                 Name = "Base+ User",
-                _permissionsInRole = new List<Permissions>{ Permissions.EditUsers }.PackPermissions()
+                _permissionsInRole = new List<Permissions> {Permissions.EditUsers}.PackPermissions()
             };
-            
+
             builder.Entity<UserRole>().HasData(
                 new
                 {

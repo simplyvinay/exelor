@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Exelor.Infrastructure.Auth.Authentication
 {
-    public static class AuthenticationService
+    public static class AuthenticationRegistry
     {
         public static IServiceCollection AddAuthentication(
             this IServiceCollection services,

@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Exelor.Infrastructure.Validation
 {
-    public static class ValidationService
+    public static class ValidationRegistry
     {
         //hook up validation into MediatR pipeline
         public static IServiceCollection AddValidationPipeline(

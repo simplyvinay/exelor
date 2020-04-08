@@ -29,10 +29,10 @@ namespace Exelor
         public void ConfigureServices(
             IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>();
-
-            services.AddMediatR(typeof(Startup))
+            services
+                .AddMediatR(typeof(Startup))
                 .AddValidationPipeline()
+                .AddSql(Configuration)
                 .AddWeb()
                 .AddSwagger() //Hook up swagger
                 .AddAuthentication(Configuration)

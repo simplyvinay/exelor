@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Exelor.Infrastructure.Auth.Authorization
 {
-    public static class AuthorizationService
+    public static class AuthorizationRegistry
     {
         public static IServiceCollection AddAuth(
             this IServiceCollection services)
