@@ -5,12 +5,14 @@ namespace Exelor.Infrastructure.Validation
 {
     public static class ValidationService
     {
-        public static void AddValidationPipeline(
+        //hook up validation into MediatR pipeline
+        public static IServiceCollection AddValidationPipeline(
             this IServiceCollection services)
         {
             services.AddTransient(
                 typeof(IPipelineBehavior<,>),
                 typeof(ValidationPipelineBehavior<,>));
+            return services;
         }
     }
 }
