@@ -1,4 +1,5 @@
 using Exelor.Infrastructure;
+using Exelor.Infrastructure.Auditing;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Auth.Authorization;
 using Exelor.Infrastructure.Data;
@@ -32,6 +33,7 @@ namespace Exelor
             services
                 .AddMediatR(typeof(Startup))
                 .AddValidationPipeline()
+                .AddAudit(Configuration)
                 .AddSql(Configuration)
                 .AddWeb()
                 .AddSwagger() //Hook up swagger

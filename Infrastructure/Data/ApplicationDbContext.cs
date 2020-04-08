@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Exelor.Domain.Identity;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Auth.Authorization;
+using Exelor.Infrastructure.Auditing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Exelor.Infrastructure.Data
 {
@@ -16,23 +21,27 @@ namespace Exelor.Infrastructure.Data
         private readonly ICurrentUser _currentUser;
         private readonly IPasswordHasher _passwordHasher;
         private readonly ILoggerFactory _loggerFactory;
+        private readonly AuditSettings _auditSettings;
 
         public ApplicationDbContext(
             DbContextOptions options,
             ICurrentUser currentUser,
             IPasswordHasher passwordHasher,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IOptions<AuditSettings> auditSettings)
             : base(options)
         {
             _currentUser = currentUser;
             _passwordHasher = passwordHasher;
             _loggerFactory = loggerFactory;
+            _auditSettings = auditSettings.Value;
         }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Audit> Audits { get; set; }
 
         protected override void OnConfiguring(
             DbContextOptionsBuilder optionsBuilder)
@@ -71,20 +80,132 @@ namespace Exelor.Infrastructure.Data
             SeedData(builder);
         }
 
-        public override Task<int> SaveChangesAsync(
+        public override async Task<int> SaveChangesAsync(
             CancellationToken cancellationToken = new CancellationToken())
         {
-            UpdateAuditFields();
-            return base.SaveChangesAsync(cancellationToken);
+            var auditEntries = await OnBeforeSaveChanges();
+            UpdateAuditFieldsOnEntities();
+            var result = await base.SaveChangesAsync(cancellationToken);
+            await OnAfterSaveChanges(auditEntries);
+            return result;
         }
 
         public override int SaveChanges()
         {
-            UpdateAuditFields();
-            return base.SaveChanges();
+            var auditEntries = Task.Run(OnBeforeSaveChanges).Result;
+            UpdateAuditFieldsOnEntities();
+            var result = base.SaveChanges();
+            Task.Run(() => OnAfterSaveChanges(auditEntries));
+            return result;
         }
 
-        private void UpdateAuditFields()
+        async Task<IEnumerable<(EntityEntry EntityEntry, Audit Audit)>> OnBeforeSaveChanges()
+        {
+            if (!_auditSettings.Enabled || _auditSettings.Sink != AuditSink.Database)
+                return null;
+
+            ChangeTracker.DetectChanges();
+            var entitiesToTrack = ChangeTracker.Entries().Where(
+                e => !(e.Entity is Audit) && e.State != EntityState.Detached && e.State != EntityState.Unchanged);
+
+            foreach (var entityEntry in entitiesToTrack.Where(e => !e.Properties.Any(p => p.IsTemporary)))
+            {
+                var auditExcludedProps = entityEntry.Entity.GetType()
+                    .GetProperties()
+                    .Where(
+                        p => p.GetCustomAttributes(
+                            typeof(JsonIgnoreAttribute),
+                            false).Any())
+                    .Select(p => p.Name)
+                    .ToList();
+
+
+                await Audits.AddRangeAsync(
+                    new Audit()
+                    {
+                        Table = entityEntry.Metadata.GetTableName(),
+                        Date = DateTime.Now.ToUniversalTime(),
+                        User = _currentUser.Name,
+                        KeyValues = JsonSerializer.Serialize(
+                            entityEntry.Properties.Where(p => p.Metadata.IsPrimaryKey()).ToDictionary(
+                                p => p.Metadata.Name,
+                                p => p.CurrentValue)),
+                        NewValues = JsonSerializer.Serialize(
+                            entityEntry.Properties.Where(
+                                    p => entityEntry.State == EntityState.Added ||
+                                         entityEntry.State == EntityState.Modified &&
+                                         !auditExcludedProps.Contains(p.Metadata.Name))
+                                .ToDictionary(
+                                    p => p.Metadata.Name,
+                                    p => p.CurrentValue)),
+                        OldValues = JsonSerializer.Serialize(
+                            entityEntry.Properties.Where(
+                                    p => entityEntry.State == EntityState.Deleted ||
+                                         entityEntry.State == EntityState.Modified &&
+                                         !auditExcludedProps.Contains(p.Metadata.Name))
+                                .ToDictionary(
+                                    p => p.Metadata.Name,
+                                    p => p.OriginalValue))
+                    });
+            }
+
+            var returnList = new List<(EntityEntry EntityEntry, Audit Audit)>();
+            foreach (var entityEntry in entitiesToTrack.Where(e => e.Properties.Any(p => p.IsTemporary)))
+            {
+                var auditExcludedProps = entityEntry.Entity.GetType()
+                    .GetProperties()
+                    .Where(
+                        p => p.GetCustomAttributes(
+                            typeof(JsonIgnoreAttribute),
+                            false).Any())
+                    .Select(p => p.Name)
+                    .ToList();
+
+                returnList.Add(
+                    (entityEntry,
+                        new Audit()
+                        {
+                            Table = entityEntry.Metadata.GetTableName(),
+                            Date = DateTime.Now.ToUniversalTime(),
+                            User = _currentUser.Name,
+                            NewValues = JsonSerializer.Serialize(
+                                entityEntry.Properties.Where(
+                                    p => !p.Metadata.IsPrimaryKey() &&
+                                         !auditExcludedProps.Contains(p.Metadata.Name)).ToDictionary(
+                                    p => p.Metadata.Name,
+                                    p => p.CurrentValue))
+                        }
+                    ));
+            }
+
+            return returnList;
+        }
+
+        private async Task OnAfterSaveChanges(
+            IEnumerable<(EntityEntry EntityEntry, Audit Audit)> auditEntries)
+        {
+            if (!_auditSettings.Enabled || _auditSettings.Sink != AuditSink.Database)
+                return;
+
+            if (auditEntries != null && auditEntries.Any())
+            {
+                foreach (var auditEntry in auditEntries)
+                {
+                    foreach (var prop in auditEntry.EntityEntry.Properties.Where(x => x.Metadata.IsPrimaryKey()))
+                    {
+                        auditEntry.Audit.KeyValues = JsonSerializer.Serialize(prop.CurrentValue);
+                    }
+
+                    Audits.Add(auditEntry.Audit);
+                }
+
+                await SaveChangesAsync();
+            }
+
+            await Task.CompletedTask;
+        }
+
+        private void UpdateAuditFieldsOnEntities()
         {
             // get entries that are being Added or Updated
             var modifiedEntries = ChangeTracker.Entries()

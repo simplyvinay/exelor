@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Exelor.Infrastructure
 {
@@ -25,9 +25,13 @@ namespace Exelor.Infrastructure
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        [JsonIgnore]
         public DateTime CreatedAt { get; set; }
+        [JsonIgnore]
         public string CreatedBy { get; set; }
+        [JsonIgnore]
         public DateTime UpdatedAt { get; set; }
+        [JsonIgnore]
         public string UpdatedBy { get; set; }
 
         public bool Archived { get; set; }
