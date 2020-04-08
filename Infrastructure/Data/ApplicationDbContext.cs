@@ -8,6 +8,7 @@ using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Auth.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Exelor.Infrastructure.Data
 {
@@ -16,28 +17,32 @@ namespace Exelor.Infrastructure.Data
         private readonly IConfiguration _configuration;
         private readonly ICurrentUser _currentUser;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly ILoggerFactory _loggerFactory; 
 
         public ApplicationDbContext(
             DbContextOptions options,
             IConfiguration configuration,
             ICurrentUser currentUser,
-            IPasswordHasher passwordHasher)
+            IPasswordHasher passwordHasher,
+            ILoggerFactory loggerFactory)
             : base(options)
         {
             _configuration = configuration;
             _currentUser = currentUser;
             _passwordHasher = passwordHasher;
+            _loggerFactory = loggerFactory;
         }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
-        //public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnConfiguring(
             DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
+            optionsBuilder.UseLoggerFactory(_loggerFactory);
             //optionsBuilder.UseNpgsql(_configuration.GetConnectionString("DefaultConnection"));
         }
 

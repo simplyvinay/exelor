@@ -4,6 +4,7 @@ using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Auth.Authorization;
 using Exelor.Infrastructure.Data;
 using Exelor.Infrastructure.ErrorHandling;
+using Exelor.Infrastructure.Logging;
 using Exelor.Infrastructure.Validation;
 using FluentValidation.AspNetCore;
 using MediatR;
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace Exelor
@@ -35,15 +37,12 @@ namespace Exelor
         public void ConfigureServices(
             IServiceCollection services)
         {
-            services.AddEntityFrameworkSqlServer()
-                .AddDbContext<ApplicationDbContext>();
-
             services.AddMediatR(typeof(Startup));
 
             //hook up validation into MediatR pipeline
-            services.AddTransient(
-                typeof(IPipelineBehavior<,>),
-                typeof(ValidationPipelineBehavior<,>));
+            services.AddValidationPipeline();
+
+            services.AddDbContext<ApplicationDbContext>();
 
             //attach the the model validator and define the api grouping convention
             //setup fluent validation for the running assembly
@@ -56,28 +55,6 @@ namespace Exelor
                 .AddJsonOptions(opt => { opt.JsonSerializerOptions.IgnoreNullValues = true; })
                 .AddFluentValidation(cfg => { cfg.RegisterValidatorsFromAssemblyContaining<Startup>(); })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
-            services.Configure<JwtSettings>(Configuration.GetSection(typeof(JwtSettings).Name));
-            services.Configure<PasswordHasherSettings>(Configuration.GetSection(typeof(PasswordHasherSettings).Name));
-
-            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-            services.AddScoped<ICurrentUser, CurrentUser>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
-            services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
-            services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
-
-            services.AddControllers(config =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                    .RequireAuthenticatedUser()
-                    .Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
-            });
-            services.AddJwtAuthentication();
-            services.AddValidationPipeline();
-            services.AddCors();
 
             //Hook up swagger
             services.AddSwaggerGen(
@@ -112,7 +89,8 @@ namespace Exelor
                         "v1",
                         new OpenApiInfo
                         {
-                            Title = "Exelor API", Version = "v1"
+                            Title = "Exelor API",
+                            Version = "v1"
                         });
                     x.CustomSchemaIds(y => y.FullName);
                     x.DocInclusionPredicate(
@@ -120,19 +98,44 @@ namespace Exelor
                             version,
                             apiDescription) => true);
                 });
+
+            services.Configure<JwtSettings>(Configuration.GetSection(typeof(JwtSettings).Name));
+            services.Configure<PasswordHasherSettings>(Configuration.GetSection(typeof(PasswordHasherSettings).Name));
+
+            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            services.AddScoped<ICurrentUser, CurrentUser>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
+            services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
+
+            services.AddControllers(
+                config =>
+                {
+                    var policy = new AuthorizationPolicyBuilder()
+                        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                        .RequireAuthenticatedUser()
+                        .Build();
+                    config.Filters.Add(new AuthorizeFilter(policy));
+                });
+            services.AddJwtAuthentication();
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            ILoggerFactory loggerFactory)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
+            loggerFactory.AddSerilogLogging();
             app.UseErrorHandlingMiddleware();
+            
+            if (!env.IsDevelopment())
+            {
+                app.UseHsts();
+                app.UseHttpsRedirection();
+            }
 
             //change this allow only specific origins
             app.UseCors(
@@ -157,8 +160,6 @@ namespace Exelor
                         "Exelor API V1");
                 });
 
-
-            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
