@@ -11,7 +11,7 @@ namespace Exelor.Infrastructure.Auth.Authorization
             PermissionsRequirement requirement)
         {
             var permissionsClaim =
-                context.User.Claims.SingleOrDefault(c => c.Type == PermissionClaimName.Permissions);
+                context.User.Claims.SingleOrDefault(c => c.Type == JwtRegisteredCustomClaimNames.Permissions);
 
             if (permissionsClaim == null)
                 return Task.CompletedTask;

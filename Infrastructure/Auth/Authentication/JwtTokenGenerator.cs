@@ -14,6 +14,7 @@ namespace Exelor.Infrastructure.Auth.Authentication
     {
         Task<string> CreateToken(
             string userId,
+            string userName,
             string email,
             IEnumerable<Permissions> permissions);
 
@@ -33,6 +34,7 @@ namespace Exelor.Infrastructure.Auth.Authentication
 
         public async Task<string> CreateToken(
             string userId,
+            string userName,
             string email,
             IEnumerable<Permissions> permissions)
         {
@@ -41,6 +43,9 @@ namespace Exelor.Infrastructure.Auth.Authentication
                 new Claim(
                     JwtRegisteredClaimNames.Sub,
                     userId),
+                new Claim(
+                    JwtRegisteredClaimNames.GivenName,
+                    userName),
                 new Claim(
                     JwtRegisteredClaimNames.Email,
                     email),
@@ -52,7 +57,7 @@ namespace Exelor.Infrastructure.Auth.Authentication
                     new DateTimeOffset(_jwtSettings.IssuedAt).ToUnixTimeSeconds().ToString(),
                     ClaimValueTypes.Integer64),
                 new Claim(
-                    PermissionClaimName.Permissions,
+                    JwtRegisteredCustomClaimNames.Permissions,
                     permissions.PackPermissions()),
             };
             var jwt = new JwtSecurityToken(

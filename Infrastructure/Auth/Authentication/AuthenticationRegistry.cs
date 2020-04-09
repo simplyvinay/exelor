@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,9 @@ namespace Exelor.Infrastructure.Auth.Authentication
             this IServiceCollection services,
             IConfiguration configuration)
         {
+            //do not auto map JwtRegisteredClaimNames to ClaimTypes
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             services.Configure<JwtSettings>(configuration.GetSection(typeof(JwtSettings).Name));
             services.Configure<PasswordHasherSettings>(configuration.GetSection(typeof(PasswordHasherSettings).Name));
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();

@@ -1,5 +1,5 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Exelor.Infrastructure.Auth.Authentication
 {
@@ -19,7 +19,7 @@ namespace Exelor.Infrastructure.Auth.Authentication
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string Id => _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        public string Name => _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        public string Id => _httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        public string Name => _httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.GivenName)?.Value;
     }
 }
