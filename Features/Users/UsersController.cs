@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
 using Exelor.Domain.Identity;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Auth.Authorization;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
+using Exelor.Infrastructure.ErrorHandling;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Exelor.Features.Users
@@ -14,7 +13,6 @@ namespace Exelor.Features.Users
         private readonly ICurrentUser _currentUser;
 
         public UsersController(
-            IMediator mediator,
             ICurrentUser currentUser)
         {
             _currentUser = currentUser;
@@ -24,15 +22,23 @@ namespace Exelor.Features.Users
         [HasPermission(Permissions.ReadUsers, Permissions.EditUsers)]
         public string Get()
         {
-            _ = _currentUser.Id;
             return "User Listing";
         }
         
         [HttpPost]
-        [HasPermission(Permissions.EditUsers)]
         public string Edit()
         {
+            if(!_currentUser.IsAllowed(Permissions.EditUsers))
+                throw new HttpException(HttpStatusCode.Forbidden);
+            
             return "Edit Users";
+        }
+        
+        [HttpDelete]
+        public string Delete()
+        {
+            _currentUser.Authorize(Permissions.EditUsers);
+            return "Delete Users";
         }
     }
 }

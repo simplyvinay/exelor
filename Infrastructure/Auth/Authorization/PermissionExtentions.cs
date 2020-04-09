@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Exelor.Domain.Identity;
+using Exelor.Infrastructure.Auth.Authentication;
+using Exelor.Infrastructure.ErrorHandling;
 
 namespace Exelor.Infrastructure.Auth.Authorization
 {
@@ -40,6 +43,29 @@ namespace Exelor.Infrastructure.Auth.Authorization
             return usersPermissions.Select(x => x)
                 .Intersect(permissionsToCheck)
                 .Any() || usersPermissions.Contains(Permissions.SuperUser);
+        }
+
+        public static void Authorize(
+            this ICurrentUser currentUser,
+            params Permissions[] permissionsToCheck)
+        {
+            var currentUserPermissions = currentUser.Permissions.UnpackPermissions();
+            var hasPermission = currentUserPermissions.Select(x => x)
+                               .Intersect(permissionsToCheck)
+                               .Any() || currentUserPermissions.Contains(Permissions.SuperUser);
+
+            if(!hasPermission)
+                throw new HttpException(HttpStatusCode.Forbidden);
+        }
+        
+        public static bool IsAllowed(
+            this ICurrentUser currentUser,
+            params Permissions[] permissionsToCheck)
+        {
+            var currentUserPermissions = currentUser.Permissions.UnpackPermissions();
+            return currentUserPermissions.Select(x => x)
+                       .Intersect(permissionsToCheck)
+                       .Any() || currentUserPermissions.Contains(Permissions.SuperUser);
         }
     }
 }
