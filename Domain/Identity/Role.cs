@@ -15,7 +15,7 @@ namespace Exelor.Domain.Identity
         }
 
         public string Name { get; set; }
-        public ICollection<UserRole> Users { get; set; } = new HashSet<UserRole>();
+        public ICollection<UserRole> Users { get; } = new HashSet<UserRole>();
         public IEnumerable<Permissions> PermissionsInRole => _permissionsInRole.UnpackPermissions();
 
         public void AddPermissions(

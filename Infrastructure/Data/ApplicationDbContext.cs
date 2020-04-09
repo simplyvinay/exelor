@@ -60,7 +60,11 @@ namespace Exelor.Infrastructure.Data
                 .WithMany(e => e.RefreshTokens)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
-            ;
+
+            builder.Entity<User>()
+                .HasMany(a => a.Roles)
+                .WithOne(a => a.User)
+                .HasForeignKey(a => a.UserId);
 
             builder.Entity<Role>()
                 .HasMany(a => a.Users)

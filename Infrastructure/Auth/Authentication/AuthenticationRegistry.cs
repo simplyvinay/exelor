@@ -25,16 +25,16 @@ namespace Exelor.Infrastructure.Auth.Authentication
 
             services.AddOptions();
 
-            var settings = services.BuildServiceProvider().GetService<IOptions<JwtSettings>>();
+            var settings = services.BuildServiceProvider().GetService<IOptions<JwtSettings>>().Value;
 
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = settings.Value.SigningCredentials.Key,
+                IssuerSigningKey = settings.SigningCredentials.Key,
                 ValidateIssuer = true,
-                ValidIssuer = settings.Value.Issuer,
+                ValidIssuer = settings.Issuer,
                 ValidateAudience = true,
-                ValidAudience = settings.Value.Audience,
+                ValidAudience = settings.Audience,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };

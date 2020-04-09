@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Exelor.Domain.Identity;
-using Exelor.Features.Users;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Data;
 using Exelor.Infrastructure.ErrorHandling;
@@ -62,9 +59,12 @@ namespace Exelor.Features.Auth
                 Command request,
                 CancellationToken cancellationToken)
             {
-                var user = await _context.Users.SingleOrDefaultAsync(
-                    x => x.UserName == request.UserName && !x.Archived,
-                    cancellationToken);
+                var user = await _context.Users
+                    .Include(x => x.Roles)
+                    .ThenInclude(x => x.Role)
+                    .SingleOrDefaultAsync(
+                        x => x.UserName == request.UserName && !x.Archived,
+                        cancellationToken);
 
                 if (user == null)
                 {
@@ -89,21 +89,11 @@ namespace Exelor.Features.Auth
                     refreshToken,
                     user.Id);
 
-                var roles = _context.UserRoles
-                    .Include(x => x.Role)
-                    .Where(x => x.User == user);
-
-                var permissions = new List<Permissions>();
-                foreach (var userRole in roles)
-                {
-                    permissions.AddRange(userRole.Role.PermissionsInRole.ToList());
-                }
-
                 var token = await _jwtTokenGenerator.CreateToken(
                     user.Id.ToString(),
                     user.FullName,
                     user.Email,
-                    permissions);
+                    user.Roles.SelectMany(x => x.Role.PermissionsInRole));
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return new UserDto(
