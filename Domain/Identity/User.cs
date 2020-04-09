@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using Exelor.Infrastructure;
+using Exelor.Infrastructure.Auditing;
 
 namespace Exelor.Domain.Identity
 {
@@ -36,9 +37,11 @@ namespace Exelor.Domain.Identity
         public string PhoneNumber { get; set; }
         public string TwoFactorEnabled { get; set; }
         [JsonIgnore]
+        [DoNotAudit]
         public byte[] Hash { get; set; }
 
         [JsonIgnore]
+        [DoNotAudit]
         public byte[] Salt { get; set; }
 
         private readonly List<RefreshToken> _refreshTokens = new List<RefreshToken>();

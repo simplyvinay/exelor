@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Exelor.Domain.Identity;
@@ -114,14 +113,14 @@ namespace Exelor.Infrastructure.Data
                     .GetProperties()
                     .Where(
                         p => p.GetCustomAttributes(
-                            typeof(JsonIgnoreAttribute),
+                            typeof(DoNotAudit),
                             false).Any())
                     .Select(p => p.Name)
                     .ToList();
 
 
                 await Audits.AddRangeAsync(
-                    new Audit()
+                    new Audit
                     {
                         Table = entityEntry.Metadata.GetTableName(),
                         Date = DateTime.Now.ToUniversalTime(),
@@ -156,14 +155,14 @@ namespace Exelor.Infrastructure.Data
                     .GetProperties()
                     .Where(
                         p => p.GetCustomAttributes(
-                            typeof(JsonIgnoreAttribute),
+                            typeof(DoNotAudit),
                             false).Any())
                     .Select(p => p.Name)
                     .ToList();
 
                 returnList.Add(
                     (entityEntry,
-                        new Audit()
+                        new Audit
                         {
                             Table = entityEntry.Metadata.GetTableName(),
                             Date = DateTime.Now.ToUniversalTime(),
