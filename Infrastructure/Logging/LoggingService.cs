@@ -16,6 +16,9 @@ namespace Exelor.Infrastructure.Logging
                     outputTemplate:
                     "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}",
                     theme: AnsiConsoleTheme.Code)
+                .WriteTo.RollingFile("Logs/logs{Date}.txt", 
+                    outputTemplate:
+                    "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
             loggerFactory.AddSerilog(log);
