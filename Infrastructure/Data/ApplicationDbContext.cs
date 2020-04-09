@@ -124,7 +124,8 @@ namespace Exelor.Infrastructure.Data
                     {
                         Table = entityEntry.Metadata.GetTableName(),
                         Date = DateTime.Now.ToUniversalTime(),
-                        User = _currentUser.Name,
+                        UserId = _currentUser.Id,
+                        UserName = _currentUser.Name,
                         KeyValues = JsonSerializer.Serialize(
                             entityEntry.Properties.Where(p => p.Metadata.IsPrimaryKey()).ToDictionary(
                                 p => p.Metadata.Name,
@@ -166,7 +167,8 @@ namespace Exelor.Infrastructure.Data
                         {
                             Table = entityEntry.Metadata.GetTableName(),
                             Date = DateTime.Now.ToUniversalTime(),
-                            User = _currentUser.Name,
+                            UserId = _currentUser.Id,
+                            UserName = _currentUser.Name,
                             NewValues = JsonSerializer.Serialize(
                                 entityEntry.Properties.Where(
                                     p => !p.Metadata.IsPrimaryKey() &&
