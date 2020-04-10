@@ -1,4 +1,6 @@
-﻿namespace Exelor.Infrastructure.Auditing
+﻿using System.Collections.Generic;
+
+namespace Exelor.Infrastructure.Auditing
 {
     public enum AuditSink
     {
@@ -9,6 +11,6 @@
     public class AuditSettings
     {
         public bool Enabled { get; set; }
-        public AuditSink Sink { get; set; }
+        public List<AuditSink> Sinks { get; set; }
     }
 }

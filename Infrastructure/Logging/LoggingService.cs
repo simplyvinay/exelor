@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Serilog;
-using Serilog.Sinks.SystemConsole.Themes;
 
 namespace Exelor.Infrastructure.Logging
 {
@@ -9,18 +10,32 @@ namespace Exelor.Infrastructure.Logging
         public static void AddSerilogLogging(
             this ILoggerFactory loggerFactory)
         {
-            var log = new LoggerConfiguration()
-                .MinimumLevel.Information()
+            /*var log1 = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                //.MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Error)
                 //.Enrich.FromLogContext()
                 .WriteTo.Console(
                     outputTemplate:
                     "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}",
                     theme: AnsiConsoleTheme.Code)
-                .WriteTo.RollingFile("Logs/logs{Date}.txt", 
-                    outputTemplate:
-                    "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}")
-                .CreateLogger();
+                .WriteTo.File(new CompactJsonFormatter(), "Logs/logs.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();*/
 
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile(
+                    "appsettings.json",
+                    false,
+                    true)
+                .AddJsonFile(
+                    $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
+                    true)
+                .AddEnvironmentVariables()
+                .Build();
+
+            var log = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
             loggerFactory.AddSerilog(log);
             Log.Logger = log;
         }

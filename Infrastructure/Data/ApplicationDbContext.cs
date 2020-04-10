@@ -5,12 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Exelor.Domain.Identity;
 using Exelor.Infrastructure.Auth.Authentication;
-using Exelor.Infrastructure.Auth.Authorization;
 using Exelor.Infrastructure.Auditing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Serilog;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Exelor.Infrastructure.Data
@@ -27,7 +26,7 @@ namespace Exelor.Infrastructure.Data
             ICurrentUser currentUser,
             IPasswordHasher passwordHasher,
             ILoggerFactory loggerFactory,
-            IOptions<AuditSettings> auditSettings)
+            IOptionsSnapshot<AuditSettings> auditSettings)
             : base(options)
         {
             _currentUser = currentUser;
@@ -104,112 +103,82 @@ namespace Exelor.Infrastructure.Data
             return result;
         }
 
-        async Task<IEnumerable<(EntityEntry EntityEntry, Audit Audit)>> OnBeforeSaveChanges()
+        private async Task<IEnumerable<AuditEntry>> OnBeforeSaveChanges()
         {
-            if (!_auditSettings.Enabled || _auditSettings.Sink != AuditSink.Database)
+            if (!_auditSettings.Enabled)
                 return null;
 
             ChangeTracker.DetectChanges();
             var entitiesToTrack = ChangeTracker.Entries().Where(
                 e => !(e.Entity is Audit) && e.State != EntityState.Detached && e.State != EntityState.Unchanged);
 
-            foreach (var entityEntry in entitiesToTrack.Where(e => !e.Properties.Any(p => p.IsTemporary)))
-            {
-                var auditExcludedProps = entityEntry.Entity.GetType()
-                    .GetProperties()
-                    .Where(
-                        p => p.GetCustomAttributes(
-                            typeof(DoNotAudit),
-                            false).Any())
-                    .Select(p => p.Name)
-                    .ToList();
+            var auditEntries = entitiesToTrack.Select(
+                    entityEntry => new AuditEntry(
+                        entityEntry,
+                        _currentUser))
+                .ToList();
 
+            await LogAsync(auditEntries);
 
-                await Audits.AddRangeAsync(
-                    new Audit
-                    {
-                        Table = entityEntry.Metadata.GetTableName(),
-                        Date = DateTime.Now.ToUniversalTime(),
-                        UserId = _currentUser.Id,
-                        UserName = _currentUser.Name,
-                        KeyValues = JsonSerializer.Serialize(
-                            entityEntry.Properties.Where(p => p.Metadata.IsPrimaryKey()).ToDictionary(
-                                p => p.Metadata.Name,
-                                p => p.CurrentValue)),
-                        NewValues = JsonSerializer.Serialize(
-                            entityEntry.Properties.Where(
-                                    p => entityEntry.State == EntityState.Added ||
-                                         entityEntry.State == EntityState.Modified &&
-                                         !auditExcludedProps.Contains(p.Metadata.Name))
-                                .ToDictionary(
-                                    p => p.Metadata.Name,
-                                    p => p.CurrentValue)),
-                        OldValues = JsonSerializer.Serialize(
-                            entityEntry.Properties.Where(
-                                    p => entityEntry.State == EntityState.Deleted ||
-                                         entityEntry.State == EntityState.Modified &&
-                                         !auditExcludedProps.Contains(p.Metadata.Name))
-                                .ToDictionary(
-                                    p => p.Metadata.Name,
-                                    p => p.OriginalValue))
-                    });
-            }
-
-            var returnList = new List<(EntityEntry EntityEntry, Audit Audit)>();
-            foreach (var entityEntry in entitiesToTrack.Where(e => e.Properties.Any(p => p.IsTemporary)))
-            {
-                var auditExcludedProps = entityEntry.Entity.GetType()
-                    .GetProperties()
-                    .Where(
-                        p => p.GetCustomAttributes(
-                            typeof(DoNotAudit),
-                            false).Any())
-                    .Select(p => p.Name)
-                    .ToList();
-
-                returnList.Add(
-                    (entityEntry,
-                        new Audit
-                        {
-                            Table = entityEntry.Metadata.GetTableName(),
-                            Date = DateTime.Now.ToUniversalTime(),
-                            UserId = _currentUser.Id,
-                            UserName = _currentUser.Name,
-                            NewValues = JsonSerializer.Serialize(
-                                entityEntry.Properties.Where(
-                                    p => !p.Metadata.IsPrimaryKey() &&
-                                         !auditExcludedProps.Contains(p.Metadata.Name)).ToDictionary(
-                                    p => p.Metadata.Name,
-                                    p => p.CurrentValue))
-                        }
-                    ));
-            }
-
-            return returnList;
+            return auditEntries.Where(x => x.TemporaryProperties.Any());
         }
 
         private async Task OnAfterSaveChanges(
-            IEnumerable<(EntityEntry EntityEntry, Audit Audit)> auditEntries)
+            IEnumerable<AuditEntry> auditEntries)
         {
-            if (!_auditSettings.Enabled || _auditSettings.Sink != AuditSink.Database)
+            if (!_auditSettings.Enabled)
                 return;
 
             if (auditEntries != null && auditEntries.Any())
             {
                 foreach (var auditEntry in auditEntries)
                 {
-                    foreach (var prop in auditEntry.EntityEntry.Properties.Where(x => x.Metadata.IsPrimaryKey()))
+                    foreach (var prop in auditEntry.TemporaryProperties)
                     {
-                        auditEntry.Audit.KeyValues = JsonSerializer.Serialize(prop.CurrentValue);
+                        if (prop.Metadata.IsPrimaryKey())
+                        {
+                            auditEntry.KeyValues[prop.Metadata.Name] = prop.CurrentValue;
+                        }
+                        else
+                        {
+                            auditEntry.NewValues[prop.Metadata.Name] = prop.CurrentValue;
+                        }
                     }
-
-                    Audits.Add(auditEntry.Audit);
                 }
 
-                await SaveChangesAsync();
+                await LogAsync(auditEntries, true);
             }
 
             await Task.CompletedTask;
+        }
+
+        private async Task LogAsync(
+            IEnumerable<AuditEntry> auditEntries, bool saveChanges = false)
+        {
+            foreach (var auditSink in _auditSettings.Sinks)
+            {
+                switch (auditSink)
+                {
+                    case AuditSink.Database:
+                        await Audits.AddRangeAsync(auditEntries.Select(auditEntry => auditEntry.AsAudit()).ToList());
+                        if (saveChanges)
+                        {
+                            await SaveChangesAsync();
+                        }
+                        break;
+                    case AuditSink.Log:
+                        foreach (var auditEntry in auditEntries)
+                        {
+                            Log.Information(
+                                "{Table} Audit Log {Details}",
+                                auditEntry.Table,
+                                JsonSerializer.Serialize(auditEntry));
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
         }
 
         private void UpdateAuditFieldsOnEntities()
