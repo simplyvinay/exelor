@@ -1,12 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Exelor.Features.Auth
+namespace Exelor.Dto
 {
     public class UserDto
     {
-        protected UserDto()
-        {
-        }
+        protected UserDto() { }
 
         public UserDto(
             string firstName,

@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 using Exelor.Infrastructure.Auditing;
 
 namespace Exelor.Infrastructure
@@ -22,7 +21,6 @@ namespace Exelor.Infrastructure
     {
         protected Entity() { }
 
-        [JsonIgnore]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

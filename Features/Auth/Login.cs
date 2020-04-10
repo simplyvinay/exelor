@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Exelor.Dto;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Data;
 using Exelor.Infrastructure.ErrorHandling;
