@@ -48,7 +48,7 @@ namespace Exelor
             IWebHostEnvironment env,
             ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddSerilogLogging();
+            loggerFactory.AddSerilogLogging(env);
             app.UseErrorHandlingMiddleware();
             
             if (!env.IsDevelopment())

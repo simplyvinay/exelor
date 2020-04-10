@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -8,7 +9,8 @@ namespace Exelor.Infrastructure.Logging
     public static class LoggingService
     {
         public static void AddSerilogLogging(
-            this ILoggerFactory loggerFactory)
+            this ILoggerFactory loggerFactory,
+            IWebHostEnvironment env)
         {
             /*var log1 = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -28,7 +30,7 @@ namespace Exelor.Infrastructure.Logging
                     false,
                     true)
                 .AddJsonFile(
-                    $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
+                    $"appsettings.{env.EnvironmentName}.json",
                     true)
                 .AddEnvironmentVariables()
                 .Build();
