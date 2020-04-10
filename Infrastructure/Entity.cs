@@ -23,7 +23,6 @@ namespace Exelor.Infrastructure
         protected Entity() { }
 
         [JsonIgnore]
-        [DoNotAudit]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
