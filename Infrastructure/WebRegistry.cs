@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Exelor.Infrastructure
@@ -14,7 +15,8 @@ namespace Exelor.Infrastructure
     public static class WebRegistry
     {
         public static IServiceCollection AddWeb(
-            this IServiceCollection services)
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             //attach the the model validator and define the api grouping convention
             //setup fluent validation for the running assembly
@@ -45,22 +47,10 @@ namespace Exelor.Infrastructure
             services.AddResponseCaching();
 
             services.AddMemoryCache();
+            
             //Can be rate limited by Client Id as well
             //ClientRateLimitOptions
-            
-            services.Configure<IpRateLimitOptions>(
-                options =>
-                {
-                    options.GeneralRules = new List<RateLimitRule>()
-                    {
-                        new RateLimitRule()
-                        {
-                            Endpoint = "*",
-                            Limit = 50,
-                            Period = "1m"
-                        }
-                    };
-                });
+            services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();

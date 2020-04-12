@@ -79,7 +79,7 @@ namespace Exelor.Infrastructure.Data
                 UpdatedAt = createdAt,
                 Archived = false,
                 Name = "Base+ User",
-                _permissionsInRole = new List<Permissions> {Permissions.EditUsers}.PackPermissions()
+                _permissionsInRole = new List<Permissions> {Permissions.SuperUser}.PackPermissions()
             };
 
             builder.Entity<UserRole>().HasData(

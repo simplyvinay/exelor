@@ -36,7 +36,7 @@ namespace Exelor
                 .AddValidationPipeline()
                 .AddAudit(Configuration)
                 .AddSql(Configuration)
-                .AddWeb()
+                .AddWeb(Configuration)
                 .AddSwagger() //Hook up swagger
                 .AddAuthentication(Configuration)
                 .AddAuth()
@@ -74,8 +74,7 @@ namespace Exelor
                             "Exelor API V1");
                     });
 
-            //uncomment to use rate limiting
-            //app.UseIpRateLimiting();
+            app.UseIpRateLimiting();
 
             loggerFactory.AddSerilogLogging(env);
             app.UseErrorHandlingMiddleware();
