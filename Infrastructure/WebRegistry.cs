@@ -3,6 +3,8 @@ using Exelor.Infrastructure.Validation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Exelor.Infrastructure
@@ -26,6 +28,19 @@ namespace Exelor.Infrastructure
 
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper, UrlHelper>(
+                implementationFactory =>
+                {
+                    var actionContext = implementationFactory.GetService<IActionContextAccessor>().ActionContext;
+                    return new UrlHelper(actionContext);
+                });
+
+            services.AddHttpCacheHeaders(
+                expirationModelOptionsAction => { expirationModelOptionsAction.MaxAge = 120; },
+                validationModelOptionsAction => { validationModelOptionsAction.MustRevalidate = true; });
+            services.AddResponseCaching();
 
             return services;
         }

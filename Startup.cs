@@ -76,6 +76,11 @@ namespace Exelor
                             "Exelor API V1");
                     });
 
+
+            //uncomment to use caching
+            //app.UseResponseCaching();
+            //app.UseHttpCacheHeaders();
+
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
