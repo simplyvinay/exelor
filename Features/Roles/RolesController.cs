@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Exelor.Domain.Identity;
 using Exelor.Dto;
+using Exelor.Features.Users;
 using Exelor.Infrastructure.Auth.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace Exelor.Features.Roles
         [HttpGet]
         public async Task<List<RoleDto>> Get()
         {
-            return await _mediator.Send(new RoleList.Query());
+            return await _mediator.Send(new UserList.Query());
         }
 
         [HttpGet("{id}")]
@@ -42,7 +43,6 @@ namespace Exelor.Features.Roles
 
         [HttpPut("{id}")]
         public async Task<RoleDto> Update(
-            int? id,
             [FromBody] UpdateRole.Command command)
         {
             return await _mediator.Send(command);

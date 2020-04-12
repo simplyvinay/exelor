@@ -1,8 +1,13 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using Exelor.Domain.Identity;
+using Exelor.Dto;
+using Exelor.Features.Roles;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Auth.Authorization;
 using Exelor.Infrastructure.ErrorHandling;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Exelor.Features.Users
@@ -11,34 +16,42 @@ namespace Exelor.Features.Users
     public class UsersController
     {
         private readonly ICurrentUser _currentUser;
+        private readonly IMediator _mediator;
 
         public UsersController(
-            ICurrentUser currentUser)
+            ICurrentUser currentUser,
+            IMediator mediator)
         {
             _currentUser = currentUser;
+            _mediator = mediator;
         }
 
         [HttpGet]
         [HasPermission(Permissions.ReadUsers, Permissions.EditUsers)]
-        public string Get()
+        [HttpGet]
+        public async Task<List<UserDetailsDto>> Get()
         {
-            return "User Listing";
+            return await _mediator.Send(new UserList.Query());
         }
         
-        [HttpPost]
-        public string Edit()
+        [HttpPut("{id}")]
+        public async Task<UserDetailsDto> Edit(
+            int? id,
+            [FromBody] UpdateUser.Command command)
         {
             if(!_currentUser.IsAllowed(Permissions.EditUsers))
                 throw new HttpException(HttpStatusCode.Forbidden);
             
-            return "Edit Users";
+            return await _mediator.Send(command);
         }
         
-        [HttpDelete]
-        public string Delete()
+
+        [HttpDelete("{id}")]
+        public async Task Delete(
+            int id)
         {
             _currentUser.Authorize(Permissions.EditUsers);
-            return "Delete Users";
+            await _mediator.Send(new DeleteUser.Command(id));
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Exelor.Features.Auth
 {
     public class Login
     {
-        public class Command : IRequest<UserDto>
+        public class Command : IRequest<AuthUserDto>
         {
             private Command() { }
 
@@ -40,7 +40,7 @@ namespace Exelor.Features.Auth
             }
         }
 
-        public class Handler : IRequestHandler<Command, UserDto>
+        public class Handler : IRequestHandler<Command, AuthUserDto>
         {
             private readonly IPasswordHasher _passwordHasher;
             private readonly IJwtTokenGenerator _jwtTokenGenerator;
@@ -56,7 +56,7 @@ namespace Exelor.Features.Auth
                 _context = context;
             }
 
-            public async Task<UserDto> Handle(
+            public async Task<AuthUserDto> Handle(
                 Command request,
                 CancellationToken cancellationToken)
             {
@@ -97,9 +97,8 @@ namespace Exelor.Features.Auth
                     user.Roles.SelectMany(x => x.Role.PermissionsInRole));
                 await _context.SaveChangesAsync(cancellationToken);
 
-                return new UserDto(
-                    user.FirstName,
-                    user.LastName,
+                return new AuthUserDto(
+                    user.Id,
                     user.FullName,
                     user.Email,
                     token,

@@ -19,7 +19,7 @@ namespace Exelor.Features.Auth
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<UserDto> Login(
+        public async Task<AuthUserDto> Login(
             [FromBody] Login.Command command)
         {
             return await _mediator.Send(command);
@@ -33,7 +33,7 @@ namespace Exelor.Features.Auth
         }
 
         [HttpPost("refreshtoken")]
-        public async Task<UserDto> RefreshToken(
+        public async Task<AuthUserDto> RefreshToken(
             [FromBody] ExchangeRefreshToken.Command command)
         {
             return await _mediator.Send(command);

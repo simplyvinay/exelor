@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Exelor.Features.Roles
 {
-    public class RoleList
+    public class UserList
     {
         public class Query : IRequest<List<RoleDto>>
         {

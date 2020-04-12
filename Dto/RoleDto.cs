@@ -5,15 +5,14 @@
         protected RoleDto() { }
 
         public RoleDto(
-            int role,
+            int id,
             string name)
         {
-            Role = role;
+            Id = id;
             Name = name;
         }
 
-        public int Id { get; set; }
-        public int Role { get; }
-        public string Name { get; set; }
+        public int Id { get; }
+        public string Name { get; }
     }
 }

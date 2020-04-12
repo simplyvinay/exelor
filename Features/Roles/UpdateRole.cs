@@ -16,15 +16,14 @@ namespace Exelor.Features.Roles
         {
             public Command(
                 int id,
-                string name,
-                string description)
+                string name)
             {
                 Id = id;
                 Name = name;
             }
 
-            public int Id { get; set; }
-            public string Name { get; set; }
+            public int Id { get; }
+            public string Name { get; }
         }
 
         public class CommandValidator : AbstractValidator<Command>

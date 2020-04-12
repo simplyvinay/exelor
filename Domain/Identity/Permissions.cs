@@ -13,13 +13,13 @@ namespace Exelor.Domain.Identity
 
         [Display(
             GroupName = "Users",
-            Name = "Read",
+            Name = "Read Users",
             Description = "Can read company users")]
         ReadUsers = 10,
 
         [Display(
             GroupName = "Users",
-            Name = "Read",
+            Name = "Edit Users",
             Description = "Can edit company users")]
         EditUsers = 11,
 
