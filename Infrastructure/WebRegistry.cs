@@ -1,4 +1,6 @@
-﻿using Exelor.Infrastructure.Auth.Authentication;
+﻿using System.Collections.Generic;
+using AspNetCoreRateLimit;
+using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Validation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +44,26 @@ namespace Exelor.Infrastructure
                 validationModelOptionsAction => { validationModelOptionsAction.MustRevalidate = true; });
             services.AddResponseCaching();
 
+            services.AddMemoryCache();
+            //Can be rate limited by Client Id as well
+            //ClientRateLimitOptions
+            
+            services.Configure<IpRateLimitOptions>(
+                options =>
+                {
+                    options.GeneralRules = new List<RateLimitRule>()
+                    {
+                        new RateLimitRule()
+                        {
+                            Endpoint = "*",
+                            Limit = 50,
+                            Period = "1m"
+                        }
+                    };
+                });
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
             return services;
         }
     }

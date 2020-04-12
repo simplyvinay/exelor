@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using Exelor.Infrastructure;
 using Exelor.Infrastructure.Auditing;
 using Exelor.Infrastructure.Auth.Authentication;
@@ -48,9 +49,6 @@ namespace Exelor
             IWebHostEnvironment env,
             ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddSerilogLogging(env);
-            app.UseErrorHandlingMiddleware();
-            
             if (!env.IsDevelopment())
             {
                 app.UseHsts();
@@ -76,6 +74,11 @@ namespace Exelor
                             "Exelor API V1");
                     });
 
+            //uncomment to use rate limiting
+            //app.UseIpRateLimiting();
+
+            loggerFactory.AddSerilogLogging(env);
+            app.UseErrorHandlingMiddleware();
 
             //uncomment to use caching
             //app.UseResponseCaching();
