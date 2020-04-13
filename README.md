@@ -104,6 +104,7 @@ GET /GetPosts
   - Run `dotnet ef migrations add Init` and then `dotnet ef database update`
 - Run `dotnet run` to start the server at `http://localhost:5000/`
 - You can view the API reference at `http://localhost:5000/swagger`
+- Login using `{ "userName": "john",  "password": "test" }` for ReadUsers permission and `{  "userName": "jane",  "password": "test" }` for SuperUser permission
 
 # Config
 
