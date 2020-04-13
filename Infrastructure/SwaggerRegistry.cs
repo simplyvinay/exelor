@@ -12,6 +12,7 @@ namespace Exelor.Infrastructure
             services.AddSwaggerGen(
                 x =>
                 {
+                    x.DescribeAllParametersInCamelCase();
                     x.AddSecurityDefinition(
                         "Bearer",
                         new OpenApiSecurityScheme

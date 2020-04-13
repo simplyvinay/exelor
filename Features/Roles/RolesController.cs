@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Exelor.Domain.Identity;
 using Exelor.Dto;
-using Exelor.Features.Users;
 using Exelor.Infrastructure.Auth.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Sieve.Models;
 
 namespace Exelor.Features.Roles
 {
@@ -22,9 +22,10 @@ namespace Exelor.Features.Roles
         }
 
         [HttpGet]
-        public async Task<List<RoleDto>> Get()
+        public async Task<List<RoleDto>> Get(
+            SieveModel sieveModel)
         {
-            return await _mediator.Send(new UserList.Query());
+            return await _mediator.Send(new UserList.Query(sieveModel));
         }
 
         [HttpGet("{id}")]
@@ -41,7 +42,7 @@ namespace Exelor.Features.Roles
             return await _mediator.Send(command);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<RoleDto> Update(
             [FromBody] UpdateRole.Command command)
         {

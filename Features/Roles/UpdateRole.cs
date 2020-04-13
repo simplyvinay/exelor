@@ -22,8 +22,8 @@ namespace Exelor.Features.Roles
                 Name = name;
             }
 
-            public int Id { get; }
-            public string Name { get; }
+            public int Id { get; set; }
+            public string Name { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>

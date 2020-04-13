@@ -3,12 +3,12 @@ using System.Net;
 using System.Threading.Tasks;
 using Exelor.Domain.Identity;
 using Exelor.Dto;
-using Exelor.Features.Roles;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Auth.Authorization;
 using Exelor.Infrastructure.ErrorHandling;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Sieve.Models;
 
 namespace Exelor.Features.Users
 {
@@ -27,24 +27,25 @@ namespace Exelor.Features.Users
         }
 
         [HttpGet]
-        [HasPermission(Permissions.ReadUsers, Permissions.EditUsers)]
-        [HttpGet]
-        public async Task<List<UserDetailsDto>> Get()
+        [HasPermission(
+            Permissions.ReadUsers,
+            Permissions.EditUsers)]
+        public async Task<List<UserDetailsDto>> Get(
+            SieveModel sieveModel)
         {
-            return await _mediator.Send(new UserList.Query());
+            return await _mediator.Send(new UserList.Query(sieveModel));
         }
-        
-        [HttpPut("{id}")]
+
+        [HttpPut]
         public async Task<UserDetailsDto> Edit(
-            int? id,
             [FromBody] UpdateUser.Command command)
         {
-            if(!_currentUser.IsAllowed(Permissions.EditUsers))
+            if (!_currentUser.IsAllowed(Permissions.EditUsers))
                 throw new HttpException(HttpStatusCode.Forbidden);
-            
+
             return await _mediator.Send(command);
         }
-        
+
 
         [HttpDelete("{id}")]
         public async Task Delete(

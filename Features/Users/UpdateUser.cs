@@ -1,10 +1,8 @@
 ﻿using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Exelor.Dto;
 using Exelor.Infrastructure.Data;
-using Exelor.Infrastructure.ErrorHandling;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -25,9 +23,9 @@ namespace Exelor.Features.Users
                 LastName = lastName;
             }
 
-            public int Id { get; }
-            public string FirstName { get; }
-            public string LastName { get; }
+            public int Id { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>

@@ -6,6 +6,8 @@ using Exelor.Dto;
 using Exelor.Infrastructure.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace Exelor.Features.Roles
 {
@@ -13,16 +15,26 @@ namespace Exelor.Features.Roles
     {
         public class Query : IRequest<List<RoleDto>>
         {
+            public SieveModel SieveModel { get; }
+
+            public Query(
+                SieveModel sieveModel)
+            {
+                SieveModel = sieveModel;
+            }
         }
 
         public class QueryHandler : IRequestHandler<Query, List<RoleDto>>
         {
             private readonly ApplicationDbContext _dbContext;
+            private readonly ISieveProcessor _sieveProcessor;
 
             public QueryHandler(
-                ApplicationDbContext dbContext)
+                ApplicationDbContext dbContext,
+                ISieveProcessor sieveProcessor)
             {
                 _dbContext = dbContext;
+                _sieveProcessor = sieveProcessor;
             }
 
             //Implement Paging
@@ -30,9 +42,11 @@ namespace Exelor.Features.Roles
                 Query message,
                 CancellationToken cancellationToken)
             {
-                var roles = await _dbContext.Roles.AsNoTracking().ToListAsync(cancellationToken);
-                return roles
-                    .Select(x => new RoleDto(x.Id, x.Name)).ToList();
+                var roles = _dbContext.Roles.AsNoTracking();
+                var filteredRoles = await _sieveProcessor.Apply(
+                    message.SieveModel,
+                    roles).ToListAsync(cancellationToken);
+                return filteredRoles.Select(x => new RoleDto(x.Id, x.Name)).ToList();
             }
         }
     }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace Exelor.Infrastructure.Data
 {
@@ -12,6 +14,10 @@ namespace Exelor.Infrastructure.Data
         {
             services.AddDbContext<ApplicationDbContext>(
                 op => op.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+            ConfigureSieve(
+                services,
+                configuration);
             return services;
         }
 
@@ -21,7 +27,18 @@ namespace Exelor.Infrastructure.Data
         {
             services.AddDbContext<ApplicationDbContext>(
                 op => op.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            ConfigureSieve(
+                services,
+                configuration);
             return services;
+        }
+
+        private static void ConfigureSieve(
+            IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.Configure<SieveOptions>(configuration.GetSection("Sieve"));
+            services.AddScoped<ISieveProcessor, ApplicationSieveProcessor>();
         }
     }
 }
