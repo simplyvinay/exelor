@@ -15,6 +15,8 @@ public class CreateRole
     {
         public class Command : IRequest<RoleDto>
         {
+            private Command() {}
+
             public Command(
                 string name)
             {

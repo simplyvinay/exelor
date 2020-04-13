@@ -14,6 +14,8 @@ namespace Exelor.Features.Roles
     {
         public class Command : IRequest<RoleDto>
         {
+            private Command() {}
+
             public Command(
                 int id,
                 string name)

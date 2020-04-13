@@ -9,6 +9,7 @@ namespace Exelor.Domain.Identity
 {
     public class User : Entity
     {
+        private readonly List<RefreshToken> _refreshTokens = new List<RefreshToken>();
 
         public User(
             string firstName,
@@ -44,7 +45,6 @@ namespace Exelor.Domain.Identity
         [DoNotAudit]
         public byte[] Salt { get; set; }
 
-        private readonly List<RefreshToken> _refreshTokens = new List<RefreshToken>();
         public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
         public ICollection<UserRole> Roles { get; } = new HashSet<UserRole>();
 

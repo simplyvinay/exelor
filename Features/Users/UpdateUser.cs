@@ -13,6 +13,8 @@ namespace Exelor.Features.Users
     {
         public class Command : IRequest<UserDetailsDto>
         {
+            private Command() {}
+
             public Command(
                 int id,
                 string firstName,

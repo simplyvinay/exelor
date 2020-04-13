@@ -27,7 +27,10 @@ namespace Exelor.Infrastructure.Data
             mapper.Property<User>(p => p.FullName)
                 .CanFilter()
                 .CanSort();
-            mapper.Property<User>(p => p.Roles)
+            mapper.Property<User>(p => p.Email)
+                .CanFilter()
+                .CanSort();
+            mapper.Property<User>(p => p.LastName)
                 .CanFilter()
                 .CanSort();
             

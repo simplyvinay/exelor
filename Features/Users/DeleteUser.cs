@@ -12,6 +12,8 @@ namespace Exelor.Features.Users
     {
         public class Command : IRequest
         {
+            private Command() {}
+
             public Command(
                 int id)
             {
