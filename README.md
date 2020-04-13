@@ -56,8 +56,8 @@ public async Task<List<UserDetailsDto>> Get(
 public async Task<UserDetailsDto> Edit(
 	[FromBody] UpdateUser.Command command)
 {
-if (<b>!_currentUser.IsAllowed(Permissions.EditUsers)</b>)
-    	throw new HttpException(HttpStatusCode.Forbidden);
+	if (<b>!_currentUser.IsAllowed(Permissions.EditUsers)</b>)
+		throw new HttpException(HttpStatusCode.Forbidden);
 	return await _mediator.Send(command);
 }
 </pre>
@@ -79,6 +79,21 @@ public async Task Delete(
 - You can enable auditing of entities which will log changes done on entities to the database. This table will store who made the changes, the table on which the change was made, the key of the entity that was changed, old values before the change and new values after
 
 <img src="/assets/images/Audit.PNG" alt="Audit" width="100%" />
+
+
+#### Paging, Sorting and Filtering
+
+- You can use paging, sorting and filtering by using the Sieve model on Get enpoints which supports the following params (you can read more about Sieve [here](https://github.com/Biarity/Sieve))
+```curl
+GET /GetPosts
+
+?sorts=     LikeCount,CommentCount,-created         // sort by likes, then comments, then descendingly by date created 
+&filters=   LikeCount>10, Title@=awesome title,     // filter to posts with more than 10 likes, and a title that contains the phrase "awesome title"
+&page=      1                                       // get the first page...
+&pageSize=  10                                      // ...which contains 10 posts
+
+```
+
 
 # Local Building
 

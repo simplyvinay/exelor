@@ -37,7 +37,6 @@ namespace Exelor.Features.Roles
                 _sieveProcessor = sieveProcessor;
             }
 
-            //Implement Paging
             public async Task<List<RoleDto>> Handle(
                 Query message,
                 CancellationToken cancellationToken)
