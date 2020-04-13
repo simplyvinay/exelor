@@ -25,6 +25,7 @@ namespace Exelor.Features.Auth
             return await _mediator.Send(command);
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<Unit> Register(
             [FromBody] Register.Command command)

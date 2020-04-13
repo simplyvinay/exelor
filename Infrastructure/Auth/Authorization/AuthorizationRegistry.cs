@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,8 @@ namespace Exelor.Infrastructure.Auth.Authorization
                         .RequireAuthenticatedUser()
                         .Build();
                     config.Filters.Add(new AuthorizeFilter(policy));
-                });
+                }) .AddJsonOptions(options => 
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
             return services;
         }

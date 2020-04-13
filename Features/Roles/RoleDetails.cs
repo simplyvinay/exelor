@@ -40,7 +40,10 @@ namespace Exelor.Features.Roles
                         cancellationToken);
                 return new RoleDto(
                     role.Id,
-                    role.Name);
+                    role.Name,
+                    string.Join(
+                        ", ",
+                        role.PermissionsInRole));
             }
         }
     }

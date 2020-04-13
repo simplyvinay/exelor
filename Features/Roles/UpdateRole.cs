@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Exelor.Domain.Identity;
 using Exelor.Dto;
 using Exelor.Infrastructure.Data;
 using Exelor.Infrastructure.ErrorHandling;
@@ -18,14 +20,17 @@ namespace Exelor.Features.Roles
 
             public Command(
                 int id,
-                string name)
+                string name,
+                List<Permissions> permissions)
             {
                 Id = id;
                 Name = name;
+                Permissions = permissions;
             }
 
             public int Id { get; set; }
             public string Name { get; set; }
+            public List<Permissions> Permissions { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -68,12 +73,15 @@ namespace Exelor.Features.Roles
                     x => x.Id == request.Id,
                     cancellationToken);
                 role.Name = request.Name;
-
+                role.AddPermissions(request.Permissions);
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return new RoleDto(
                     role.Id,
-                    role.Name);
+                    role.Name,
+                    string.Join(
+                        ", ",
+                        role.PermissionsInRole));
             }
         }
     }

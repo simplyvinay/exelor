@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Exelor.Domain.Identity;
@@ -18,12 +19,15 @@ public class CreateRole
             private Command() {}
 
             public Command(
-                string name)
+                string name,
+                List<Permissions> permissions)
             {
                 Name = name;
+                Permissions = permissions;
             }
 
             public string Name { get; set; }
+            public List<Permissions> Permissions { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -62,6 +66,7 @@ public class CreateRole
 
                 var role = new Role(
                     request.Name);
+                role.AddPermissions(request.Permissions);
 
                 await _dbContext.Roles.AddAsync(
                     role,
@@ -70,7 +75,10 @@ public class CreateRole
 
                 return new RoleDto(
                     role.Id,
-                    role.Name);
+                    role.Name,
+                    string.Join(
+                        ", ",
+                        role.PermissionsInRole));
             }
         }
     }

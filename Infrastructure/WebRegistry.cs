@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using AspNetCoreRateLimit;
+﻿using AspNetCoreRateLimit;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Validation;
 using FluentValidation.AspNetCore;
@@ -54,6 +53,7 @@ namespace Exelor.Infrastructure
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
             return services;
         }
     }

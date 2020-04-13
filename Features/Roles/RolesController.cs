@@ -41,7 +41,7 @@ namespace Exelor.Features.Roles
         {
             return await _mediator.Send(command);
         }
-
+        
         [HttpPut]
         public async Task<RoleDto> Update(
             [FromBody] UpdateRole.Command command)

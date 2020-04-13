@@ -46,7 +46,13 @@ namespace Exelor.Features.Roles
                 var filteredRoles = await _sieveProcessor.Apply(
                     message.SieveModel,
                     roles).ToListAsync(cancellationToken);
-                return filteredRoles.Select(x => new RoleDto(x.Id, x.Name)).ToList();
+                return filteredRoles.Select(
+                    role => new RoleDto(
+                        role.Id,
+                        role.Name,
+                        string.Join(
+                            ", ",
+                            role.PermissionsInRole))).ToList();
             }
         }
     }
