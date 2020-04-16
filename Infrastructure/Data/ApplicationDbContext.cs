@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Exelor.Domain.Identity;
@@ -50,35 +51,8 @@ namespace Exelor.Infrastructure.Data
         protected override void OnModelCreating(
             ModelBuilder builder)
         {
-            var navigation = builder.Entity<User>()
-                .Metadata.FindNavigation(nameof(User.RefreshTokens));
-            navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
-
-            builder.Entity<RefreshToken>()
-                .HasOne(d => d.User)
-                .WithMany(e => e.RefreshTokens)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<User>()
-                .HasMany(a => a.Roles)
-                .WithOne(a => a.User)
-                .HasForeignKey(a => a.UserId);
-
-            builder.Entity<Role>()
-                .HasMany(a => a.Users)
-                .WithOne(a => a.Role)
-                .HasForeignKey(a => a.RoleId);
-
-            builder.Entity<Role>()
-                .Property("_permissionsInRole")
-                .HasColumnName("PermissionsInRole")
-                .UsePropertyAccessMode(PropertyAccessMode.Field);
-
-            builder.Entity<UserRole>()
-                .ToTable("UserRole")
-                .HasKey(r => new {r.UserId, r.RoleId});
-
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            
             DataSeeder.SeedData(
                 builder,
                 _passwordHasher);
@@ -96,11 +70,7 @@ namespace Exelor.Infrastructure.Data
 
         public override int SaveChanges()
         {
-            var auditEntries = Task.Run(OnBeforeSaveChanges).Result;
-            UpdateAuditFieldsOnEntities();
-            var result = base.SaveChanges();
-            Task.Run(() => OnAfterSaveChanges(auditEntries));
-            return result;
+            return SaveChangesAsync().GetAwaiter().GetResult();
         }
 
         async Task<IEnumerable<(EntityEntry EntityEntry, Audit Audit)>> OnBeforeSaveChanges()
