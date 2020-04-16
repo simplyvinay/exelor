@@ -6,7 +6,7 @@ using Exelor.Domain.Identity;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.ErrorHandling;
 
-namespace Exelor.Infrastructure.Auth.Authorization
+namespace Exelor.Helpers.Extensions
 {
     public static class PermissionExtensions
     {

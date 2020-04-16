@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using Exelor.Helpers.Extensions;
 using Exelor.Infrastructure;
-using Exelor.Infrastructure.Auth.Authorization;
 
 namespace Exelor.Domain.Identity
 {

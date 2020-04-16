@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Exelor.Helpers.Extensions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Exelor.Infrastructure.Auth.Authorization

@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
 using Exelor.Domain.Identity;
 using Exelor.Dto;
+using Exelor.Helpers;
+using Exelor.Helpers.Extensions;
 using Exelor.Infrastructure.Auth.Authentication;
 using Exelor.Infrastructure.Auth.Authorization;
 using Exelor.Infrastructure.ErrorHandling;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Sieve.Models;
 
 namespace Exelor.Features.Users
 {
@@ -30,10 +30,11 @@ namespace Exelor.Features.Users
         [HasPermission(
             Permissions.ReadUsers,
             Permissions.EditUsers)]
-        public async Task<List<UserDetailsDto>> Get(
-            SieveModel sieveModel)
+        [ProducesResponseType(typeof(UserDetailsDto), 200)]
+        public async Task<object> Get(
+            ListResourceParameters resourceParams)
         {
-            return await _mediator.Send(new UserList.Query(sieveModel));
+            return await _mediator.Send(new UserList.Query(resourceParams));
         }
 
         [HttpPut]

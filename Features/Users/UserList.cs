@@ -1,30 +1,30 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Exelor.Dto;
+using Exelor.Helpers;
+using Exelor.Helpers.Extensions;
 using Exelor.Infrastructure.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Sieve.Models;
 using Sieve.Services;
 
 namespace Exelor.Features.Users
 {
     public class UserList
     {
-        public class Query : IRequest<List<UserDetailsDto>>
+        public class Query : IRequest<object>
         {
-            public SieveModel SieveModel { get; }
+            public ListResourceParameters ResourceParams { get; }
 
             public Query(
-                SieveModel sieveModel)
+                ListResourceParameters resourceParams)
             {
-                SieveModel = sieveModel;
+                ResourceParams = resourceParams;
             }
         }
 
-        public class QueryHandler : IRequestHandler<Query, List<UserDetailsDto>>
+        public class QueryHandler : IRequestHandler<Query, object>
         {
             private readonly ApplicationDbContext _dbContext;
             private readonly ISieveProcessor _sieveProcessor;
@@ -38,7 +38,7 @@ namespace Exelor.Features.Users
             }
 
             //Implement Paging
-            public async Task<List<UserDetailsDto>> Handle(
+            public async Task<object> Handle(
                 Query message,
                 CancellationToken cancellationToken)
             {
@@ -46,22 +46,25 @@ namespace Exelor.Features.Users
                     .Include(x => x.Roles)
                     .ThenInclude(x => x.Role);
 
-                //var count = _sieveProcessor.Apply(message.SieveModel, users, applyPagination: false).Count();
+                //var count = _sieveProcessor.Apply(message.ResourceParams, users, applyPagination: false).Count();
 
                 var filteredUsers = await _sieveProcessor.Apply(
-                    message.SieveModel,
+                    message.ResourceParams,
                     users).ToListAsync(cancellationToken);
 
-                return filteredUsers
+                var userDetailsDtos = filteredUsers
                     .Select(
-                    user => new UserDetailsDto(
-                        user.Id,
-                        user.FirstName,
-                        user.LastName,
-                        user.FullName,
-                        user.Email,
-                        string.Join(", ", user.Roles.Select(r => r.Role.Name)))
+                        user => new UserDetailsDto(
+                            user.Id,
+                            user.FirstName,
+                            user.LastName,
+                            user.FullName,
+                            user.Email,
+                            string.Join(
+                                ", ",
+                                user.Roles.Select(r => r.Role.Name)))
                     ).ToList();
+                return userDetailsDtos.ShapeData(message.ResourceParams.Fields);
             }
         }
     }

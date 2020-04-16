@@ -10,7 +10,7 @@
 
 # Exelor
 
-Exelor is a lightweight .net core api framework that includes jwt authentication with refresh token support, permission authorisation, auditing, logging, error handling, fluent validation, swagger, caching and rate limiting
+Exelor is a lightweight .net core api framework that includes jwt authentication with refresh token support, permission authorisation, auditing, logging, error handling, fluent validation, swagger, caching, data shaping and rate limiting
 
 # Tech Stack
 
@@ -39,7 +39,7 @@ By default all routes in Exelor needs to be authorised. If you don't want a spec
 You can authorise an action in 3 different ways
 - Attribute based authorisation: You can add `HasPermission` attribute to controllers/actions and provide a list of permission which has access to the controllers/actions
 
-<pre>
+<pre lang="csharp">
 [HttpGet]
 <b>[HasPermission(Permissions.ReadUsers, Permissions.EditUsers)]</b>
 public async Task<List<UserDetailsDto>> Get(
@@ -51,7 +51,7 @@ public async Task<List<UserDetailsDto>> Get(
 
 - By checking if the user has a permission by calling `IsAllowed`
 
-<pre>
+<pre lang="csharp">
 [HttpPut]
 public async Task<UserDetailsDto> Edit(
 	[FromBody] UpdateUser.Command command)
@@ -63,7 +63,7 @@ public async Task<UserDetailsDto> Edit(
 </pre>
 
 - By validating a permission against the user (this throws an exception if the user doesn't have the permission in question)
-<pre>
+<pre lang="csharp">
 [HttpDelete("{id}")]
 public async Task Delete(
 	int id)
@@ -94,6 +94,25 @@ GET /GetPosts
 
 ```
 
+#### Data Shaping
+- You can request the fields that you are interesed in and only those fields are returned in the resposen
+```curl
+GET /Roles
+
+?fields=     Id, Name         // Only returns the Id and Name values
+```
+<pre lang="JSON">
+[
+  {
+    "Id": 1,
+    "Name": "HR"
+  },
+  {
+    "Id": 2,
+    "Name": "Project Manager"
+  }
+]
+</pre>
 
 # Local Building
 

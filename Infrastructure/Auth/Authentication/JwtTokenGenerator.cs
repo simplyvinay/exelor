@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Exelor.Domain.Identity;
+using Exelor.Helpers.Extensions;
 using Exelor.Infrastructure.Auth.Authorization;
 using Microsoft.Extensions.Options;
 
