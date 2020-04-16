@@ -83,7 +83,7 @@ public async Task Delete(
 
 #### Paging, Sorting and Filtering
 
-- You can use paging, sorting and filtering by using the Sieve model on Get enpoints which supports the following params (you can read more about Sieve [here](https://github.com/Biarity/Sieve))
+- You can use paging, sorting and filtering by using the Sieve model on Get endpoints which supports the following params (you can read more about Sieve [here](https://github.com/Biarity/Sieve))
 ```curl
 GET /GetPosts
 
@@ -95,7 +95,7 @@ GET /GetPosts
 ```
 
 #### Data Shaping
-- You can request the fields that you are interesed in and only those fields are returned in the resposen
+- You can request the fields that you are interested in and only those fields are returned in the response
 ```curl
 GET /Roles
 
