@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Exelor.Features.Users
 {
-    [Route("api/users")]
+    [ApiVersion("1")]
+    [Route("api/v{version:ApiVersion}/users")]
     public class UsersController
     {
         private readonly ICurrentUser _currentUser;

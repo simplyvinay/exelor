@@ -6,6 +6,7 @@ using Exelor.Infrastructure.Auth.Authorization;
 using Exelor.Infrastructure.Data;
 using Exelor.Infrastructure.ErrorHandling;
 using Exelor.Infrastructure.Logging;
+using Exelor.Infrastructure.Swagger;
 using Exelor.Infrastructure.Validation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -69,9 +70,8 @@ namespace Exelor
                 .UseSwaggerUI(
                     x =>
                     {
-                        x.SwaggerEndpoint(
-                            "/swagger/v1/swagger.json",
-                            "Exelor API V1");
+                        x.SwaggerEndpoint("/swagger/v1/swagger.json", "V1");
+                        x.SwaggerEndpoint("/swagger/v2/swagger.json", "V2");
                     });
 
             app.UseIpRateLimiting();

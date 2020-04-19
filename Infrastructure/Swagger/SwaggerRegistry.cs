@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Exelor.Infrastructure
+namespace Exelor.Infrastructure.Swagger
 {
     public static class SwaggerRegistry 
     {
@@ -45,11 +48,32 @@ namespace Exelor.Infrastructure
                             Title = "Exelor API",
                             Version = "v1"
                         });
+                    x.SwaggerDoc(
+                        "v2",
+                        new OpenApiInfo
+                        {
+                            Title = "Exelor API",
+                            Version = "v2"
+                        });
                     x.CustomSchemaIds(y => y.FullName);
-                    x.DocInclusionPredicate(
-                        (
-                            version,
-                            apiDescription) => true);
+                    x.OperationFilter<RemoveVersionFromParameter>();
+                    x.DocumentFilter<ReplaceVersionWithExactValueInPath>();
+
+                    x.DocInclusionPredicate((docName, apiDesc) =>
+                    {
+                        var versions = apiDesc
+                            .CustomAttributes()
+                            .OfType<ApiVersionAttribute>()
+                            .SelectMany(attribute => attribute.Versions);
+
+                        var maps = apiDesc
+                            .CustomAttributes()
+                            .OfType<MapToApiVersionAttribute>().ToList()
+                            .SelectMany(attribute => attribute.Versions);
+
+                        return versions.Any(v => $"v{v}" == docName)
+                               && (!maps.Any() || maps.Any(v => $"v{v}" == docName));
+                    });
                 });
 
             return services;

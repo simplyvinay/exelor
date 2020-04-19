@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Exelor.Features.Roles
 {
-    [Route("api/roles")]
+    [ApiVersion("1")]
+    [ApiVersion("2")]
+    [Route("api/v{version:ApiVersion}/roles")]
     [HasPermission(Permissions.RoleManager)]
     public class RolesController
     {
@@ -24,6 +26,16 @@ namespace Exelor.Features.Roles
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<RoleDto>), 200)]
         public async Task<object> Get(
+            ListResourceParameters resourceParams)
+        {
+            return await _mediator.Send(new RoleList.Query(resourceParams));
+        }
+
+        [Route("getroles")]
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<RoleDto>), 200)]
+        [MapToApiVersion("2")] // v2 specific action for GET api/roles endpoint
+        public async Task<object> Getv2(
             ListResourceParameters resourceParams)
         {
             return await _mediator.Send(new RoleList.Query(resourceParams));
