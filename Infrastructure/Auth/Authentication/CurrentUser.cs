@@ -22,7 +22,7 @@ namespace Exelor.Infrastructure.Auth.Authentication
             _httpContextAccessor = httpContextAccessor;
         }
 
-        ClaimsPrincipal User => _httpContextAccessor.HttpContext.User;
+        ClaimsPrincipal User => _httpContextAccessor?.HttpContext?.User;
 
         public string Id => User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
                             ?? string.Empty;
