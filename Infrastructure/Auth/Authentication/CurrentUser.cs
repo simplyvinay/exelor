@@ -1,4 +1,5 @@
-﻿using Exelor.Infrastructure.Auth.Authorization;
+﻿using System.Security.Claims;
+using Exelor.Infrastructure.Auth.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.JsonWebTokens;
 
@@ -21,14 +22,15 @@ namespace Exelor.Infrastructure.Auth.Authentication
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string Id => _httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ??
-                            string.Empty;
+        ClaimsPrincipal User => _httpContextAccessor.HttpContext.User;
 
-        public string Name =>
-            _httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.GivenName)?.Value ?? string.Empty;
+        public string Id => User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+                            ?? string.Empty;
 
-        public string Permissions =>
-            _httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredCustomClaimNames.Permissions)?.Value ??
-            string.Empty;
+        public string Name => User?.FindFirst(JwtRegisteredClaimNames.GivenName)?.Value
+                              ?? string.Empty;
+
+        public string Permissions => User?.FindFirst(JwtRegisteredCustomClaimNames.Permissions)?.Value
+                                     ?? string.Empty;
     }
 }

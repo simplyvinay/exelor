@@ -36,7 +36,7 @@ namespace Exelor
                 .AddMediatR(typeof(Startup))
                 .AddValidationPipeline()
                 .AddAudit(Configuration)
-                .AddSql(Configuration)
+                .AddPostgres(Configuration)
                 .AddWeb(Configuration)
                 .AddSwagger() //Hook up swagger
                 .AddAuthentication(Configuration)

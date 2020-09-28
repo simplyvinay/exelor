@@ -26,7 +26,9 @@ namespace Exelor.Infrastructure.Data
             IConfiguration configuration)
         {
             services.AddDbContext<ApplicationDbContext>(
-                op => op.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+                op => op
+                    .UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+                    .UseLowerCaseNamingConvention());
             ConfigureSieve(
                 services,
                 configuration);
