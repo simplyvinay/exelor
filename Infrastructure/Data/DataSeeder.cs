@@ -1,98 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Exelor.Domain.Identity;
-using Exelor.Helpers.Extensions;
 using Exelor.Infrastructure.Auth.Authentication;
-using Exelor.Infrastructure.Auth.Authorization;
-using Microsoft.EntityFrameworkCore;
 
 namespace Exelor.Infrastructure.Data
 {
     public class DataSeeder
     {
-        internal static void SeedData(
-            ModelBuilder builder,
+        internal static async Task SeedData(
+            ApplicationDbContext context,
             IPasswordHasher passwordHasher)
         {
-            var createdAt = DateTime.Now;
-            var salt = Guid.NewGuid().ToByteArray();
-            var user1 = new User(
-                "John",
-                "Doe",
-                "john@demo.com",
-                "john",
-                string.Empty,
-                passwordHasher.Hash(
-                    "test",
-                    salt),
-                salt
-            )
+            if (!context.Users.Any())
             {
-                Id = 1,
-                CreatedAt = createdAt,
-                UpdatedAt = createdAt,
-                Archived = false
-            };
 
-            var role1 = new
-            {
-                Id = 1,
-                CreatedAt = createdAt,
-                UpdatedAt = createdAt,
-                Archived = false,
-                Name = "Base User",
-                _permissionsInRole = new List<Permissions> {Permissions.ReadUsers}.PackPermissions()
-            };
+                var salt = Guid.NewGuid().ToByteArray();
+                var user1 = new User(
+                    "John",
+                    "Doe",
+                    "john@demo.com",
+                    "john",
+                    string.Empty,
+                    passwordHasher.Hash(
+                        "test",
+                        salt),
+                    salt
+                );
+                context.Users.Add(user1);
 
-            builder.Entity<UserRole>().HasData(
-                new
-                {
-                    UserId = 1,
-                    RoleId = 1
-                }
-            );
+                var role1 = new Role("Base User");
+                role1.AddPermissions(new List<Permissions> {Permissions.ReadUsers});
+                context.Roles.Add(role1);
 
-            builder.Entity<User>().HasData(user1);
-            builder.Entity<Role>().HasData(role1);
+                var userRole1 = new UserRole(user1, role1);
+                context.UserRoles.Add(userRole1);
+                
+                var user2 = new User(
+                    "Jane",
+                    "Doe",
+                    "jane@demo.com",
+                    "jane",
+                    string.Empty,
+                    passwordHasher.Hash(
+                        "test",
+                        salt),
+                    salt
+                );
+                context.Users.Add(user2);
 
-            var user2 = new User(
-                "Jane",
-                "Doe",
-                "jane@demo.com",
-                "jane",
-                string.Empty,
-                passwordHasher.Hash(
-                    "test",
-                    salt),
-                salt
-            )
-            {
-                Id = 2,
-                CreatedAt = createdAt,
-                UpdatedAt = createdAt,
-                Archived = false
-            };
+                var role2 = new Role("Super User");
+                role2.AddPermissions(new List<Permissions> {Permissions.SuperUser});
+                context.Roles.Add(role2);
 
-            var role2 = new
-            {
-                Id = 2,
-                CreatedAt = createdAt,
-                UpdatedAt = createdAt,
-                Archived = false,
-                Name = "Base+ User",
-                _permissionsInRole = new List<Permissions> {Permissions.SuperUser}.PackPermissions()
-            };
-
-            builder.Entity<UserRole>().HasData(
-                new
-                {
-                    UserId = 2,
-                    RoleId = 2
-                }
-            );
-
-            builder.Entity<User>().HasData(user2);
-            builder.Entity<Role>().HasData(role2);
+                var userRole2 = new UserRole(user2, role2);
+                context.UserRoles.Add(userRole2);
+                
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

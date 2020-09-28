@@ -10,7 +10,7 @@ namespace Exelor.Infrastructure.Data.Config
             EntityTypeBuilder<UserRole> builder)
         {
             builder
-                .ToTable("UserRole")
+                .ToTable("userroles")
                 .HasKey(r => new {r.UserId, r.RoleId});
         }
     }

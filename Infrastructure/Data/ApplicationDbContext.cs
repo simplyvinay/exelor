@@ -52,10 +52,6 @@ namespace Exelor.Infrastructure.Data
             ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            
-            DataSeeder.SeedData(
-                builder,
-                _passwordHasher);
         }
 
         public override async Task<int> SaveChangesAsync(
