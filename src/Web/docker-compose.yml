@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  db:
+    image: ${DB_IMAGE}
+    ports: 
+      - ${HOST_PORT}:${LOCAL_PORT}
+    volumes:
+      - data:${LOCAL_DATADIR}
+    env_file: .env
+
+volumes:
+  data:
+    name: ${HOST_DATAVOLUMENAME}
+    external: false # creates a volume if not present 
