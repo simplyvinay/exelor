@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
-using Domain.Interfaces;
-using Infrastructure.Auth.Authorization;
+using Application.Common.Auth.Authorization;
+using Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.JsonWebTokens;
 

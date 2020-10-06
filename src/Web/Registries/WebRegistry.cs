@@ -1,7 +1,6 @@
-﻿using Domain.Interfaces;
+﻿using Application.Common.Filters;
+using Application.Common.Interfaces;
 using FluentValidation.AspNetCore;
-using Infrastructure.Behaviours;
-using Infrastructure.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -25,7 +24,6 @@ namespace Web.Registries
                     options =>
                     {
                         options.Filters.Add<ValidateModelFilter>();
-                        options.Conventions.Add(new GroupByApiRootConvention());
                     })
                 .AddJsonOptions(opt => { opt.JsonSerializerOptions.IgnoreNullValues = true; })
                 .AddFluentValidation(cfg => { cfg.RegisterValidatorsFromAssemblyContaining<Startup>(); })
@@ -41,13 +39,6 @@ namespace Web.Registries
                     var actionContext = implementationFactory.GetService<IActionContextAccessor>().ActionContext;
                     return new UrlHelper(actionContext);
                 });
-
-            services.AddHttpCacheHeaders(
-                expirationModelOptionsAction => { expirationModelOptionsAction.MaxAge = 120; },
-                validationModelOptionsAction => { validationModelOptionsAction.MustRevalidate = true; });
-
-            services.AddResponseCaching();
-            services.AddMemoryCache();
 
             services.AddApiVersioning(
                 config =>

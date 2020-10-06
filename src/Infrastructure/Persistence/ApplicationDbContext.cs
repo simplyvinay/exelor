@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Domain.Common;
 using Domain.Entities.Identity;
 using Domain.Interfaces;
-using Infrastructure.Audit;
+using Exelor.Application.Common.Audit;
 using Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

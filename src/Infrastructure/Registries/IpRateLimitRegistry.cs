@@ -1,5 +1,4 @@
 ﻿using AspNetCoreRateLimit;
-using Infrastructure.Audit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

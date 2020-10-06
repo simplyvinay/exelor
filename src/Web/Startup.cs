@@ -1,6 +1,7 @@
+using Application;
 using AspNetCoreRateLimit;
+using Infrastructure;
 using Infrastructure.Registries;
-using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

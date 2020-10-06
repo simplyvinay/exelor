@@ -1,12 +1,6 @@
 /.vscode/
-/bin/
-/obj/
-/obj/
+bin/
+obj/
 /.vs/
-/*.user
+*.user
 /Logs/logs*
-/src/Application/obj/
-/src/Domain/obj/
-/src/Infrastructure/obj/
-/src/Web/bin/
-/src/Web/obj/

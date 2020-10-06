@@ -5,11 +5,13 @@ VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\Domain\Domain.csproj", "{46D6C994-8A8B-40D3-BAC0-5574FD1248B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{B2C7F17E-6DFC-45E9-ABBD-18F1E1E2E6EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{B2C7F17E-6DFC-45E9-ABBD-18F1E1E2E6EF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "exelor", "exelor.csproj", "{7F7F0B9F-6326-407E-9290-0347DB0ECC6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "src\Web\Web.csproj", "{E9FEDAAC-E493-4D8E-9491-E47F46F1C7D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "src\Web\Web.csproj", "{E9FEDAAC-E493-4D8E-9491-E47F46F1C7D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Application\Application.csproj", "{9CA464EC-AA1C-4934-A7C6-43BF8954551F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E9FEDAAC-E493-4D8E-9491-E47F46F1C7D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9FEDAAC-E493-4D8E-9491-E47F46F1C7D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9FEDAAC-E493-4D8E-9491-E47F46F1C7D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CA464EC-AA1C-4934-A7C6-43BF8954551F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CA464EC-AA1C-4934-A7C6-43BF8954551F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CA464EC-AA1C-4934-A7C6-43BF8954551F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CA464EC-AA1C-4934-A7C6-43BF8954551F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
