@@ -1,4 +1,6 @@
-﻿using Infrastructure.Persistence;
+﻿using Application.Common.Interfaces;
+using Infrastructure.Auth;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +9,7 @@ namespace Infrastructure
 {
     public static class InfrastructureRegistry
     {
-        public static IServiceCollection AddPostgres(
+        public static IServiceCollection AddInfrastructure(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -15,6 +17,9 @@ namespace Infrastructure
                 op => op
                     .UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
                     .UseLowerCaseNamingConvention());
+            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
+
             return services;
         }
     }

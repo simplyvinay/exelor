@@ -11,14 +11,14 @@ namespace Application.Common.Behaviours
         : IRequestPreProcessor<TRequest>
     {
         private readonly ILogger _logger;
-        private readonly ICurrentUser _currentUser;
+        private readonly ICurrentUserService _currentUserService;
 
         public LoggingBehaviour(
             ILogger<TRequest> logger,
-            ICurrentUser currentUser)
+            ICurrentUserService currentUserService)
         {
             _logger = logger;
-            _currentUser = currentUser;
+            _currentUserService = currentUserService;
         }
 
 
@@ -30,8 +30,8 @@ namespace Application.Common.Behaviours
             _logger.LogInformation(
                 "Request: {Name} {@UserId} {@UserName} {@Request}",
                 requestName,
-                _currentUser.Id,
-                _currentUser.Name,
+                _currentUserService.Id,
+                _currentUserService.Name,
                 request);
             return Unit.Task;
         }

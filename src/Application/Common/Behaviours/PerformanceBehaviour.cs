@@ -11,16 +11,16 @@ namespace Application.Common.Behaviours
     {
         private readonly Stopwatch _timer;
         private readonly ILogger<TRequest> _logger;
-        private readonly ICurrentUser _currentUser;
+        private readonly ICurrentUserService _currentUserService;
 
         public PerformanceBehaviour(
             ILogger<TRequest> logger,
-            ICurrentUser currentUser)
+            ICurrentUserService currentUserService)
         {
             _timer = new Stopwatch();
 
             _logger = logger;
-            _currentUser = currentUser;
+            _currentUserService = currentUserService;
         }
 
         public async Task<TResponse> Handle(
@@ -44,8 +44,8 @@ namespace Application.Common.Behaviours
                     "Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
                     requestName,
                     elapsedMilliseconds,
-                    _currentUser.Id,
-                    _currentUser.Name,
+                    _currentUserService.Id,
+                    _currentUserService.Name,
                     request);
             }
 

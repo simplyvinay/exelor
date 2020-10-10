@@ -34,10 +34,10 @@ namespace Application.Common.Extensions
         }
 
         public static void Authorize(
-            this ICurrentUser currentUser,
+            this ICurrentUserService currentUserService,
             params Permissions[] permissionsToCheck)
         {
-            var currentUserPermissions = currentUser.Permissions.UnpackPermissions();
+            var currentUserPermissions = currentUserService.Permissions.UnpackPermissions();
             var hasPermission = currentUserPermissions.Select(x => x)
                 .Intersect(permissionsToCheck)
                 .Any() || currentUserPermissions.Contains(Permissions.SuperUser);
@@ -47,10 +47,10 @@ namespace Application.Common.Extensions
         }
         
         public static bool IsAllowed(
-            this ICurrentUser currentUser,
+            this ICurrentUserService currentUserService,
             params Permissions[] permissionsToCheck)
         {
-            var currentUserPermissions = currentUser.Permissions.UnpackPermissions();
+            var currentUserPermissions = currentUserService.Permissions.UnpackPermissions();
             return currentUserPermissions.Select(x => x)
                 .Intersect(permissionsToCheck)
                 .Any() || currentUserPermissions.Contains(Permissions.SuperUser);

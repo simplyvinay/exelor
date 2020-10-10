@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Web.Services;
@@ -28,7 +29,7 @@ namespace Web
                 .AddFluentValidation(cfg => { cfg.RegisterValidatorsFromAssemblyContaining<Startup>(); })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            services.AddScoped<ICurrentUser, CurrentUser>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();

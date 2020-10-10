@@ -9,7 +9,6 @@ using Application.Common.Behaviours;
 using Application.Common.ErrorHandling;
 using Application.Common.Interfaces;
 using AspNetCoreRateLimit;
-using Exelor.Infrastructure.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -27,8 +26,23 @@ namespace Application
 {
     public static class ApplicationRegistry
     {
+
+        public static IServiceCollection AddApplicationRegistry(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services
+                .AddValidationPipeline()
+                .AddAudit(configuration)
+                .AddAuthentication(configuration)
+                .AddAuthorization()
+                .AddIpRateLimiting(configuration);
+
+            return services;
+        }
+
         //hook up validation into MediatR pipeline
-        public static IServiceCollection AddValidationPipeline(
+        private static IServiceCollection AddValidationPipeline(
             this IServiceCollection services)
         {
             services.AddTransient(
@@ -37,7 +51,7 @@ namespace Application
             return services;
         }
 
-        public static IServiceCollection AddAudit(
+        private static IServiceCollection AddAudit(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -45,7 +59,7 @@ namespace Application
             return services;
         }
 
-        public static IServiceCollection AddAuthentication(
+        private static IServiceCollection AddAuthentication(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -54,9 +68,6 @@ namespace Application
 
             services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
             services.Configure<PasswordHasherSettings>(configuration.GetSection(nameof(PasswordHasherSettings)));
-            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
-
             services.AddOptions();
 
             var settings = services.BuildServiceProvider().GetService<IOptions<JwtSettings>>().Value;
@@ -115,7 +126,7 @@ namespace Application
             return services;
         }
 
-        public static IServiceCollection AddAuth(
+        private static IServiceCollection AddAuthorization(
             this IServiceCollection services)
         {
             services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
@@ -131,6 +142,20 @@ namespace Application
                     config.Filters.Add(new AuthorizeFilter(policy));
                 }) .AddJsonOptions(options => 
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+            return services;
+        }
+
+        private static IServiceCollection AddIpRateLimiting(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            //Can be rate limited by Client Id as well
+            //ClientRateLimitOptions
+            services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
             return services;
         }
@@ -167,20 +192,6 @@ namespace Application
                 .CreateLogger();
             loggerFactory.AddSerilog(log);
             Log.Logger = log;
-        }
-
-        public static IServiceCollection AddIpRateLimiting(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            //Can be rate limited by Client Id as well
-            //ClientRateLimitOptions
-            services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
-            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-
-            return services;
         }
 
         public static IApplicationBuilder UseErrorHandlingMiddleware(

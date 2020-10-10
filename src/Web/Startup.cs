@@ -29,14 +29,10 @@ namespace Web
         {
             services
                 .AddMediatR(typeof(Startup))
-                .AddValidationPipeline()
-                .AddAudit(Configuration)
-                .AddPostgres(Configuration)
+                .AddApplicationRegistry(Configuration)
+                .AddInfrastructure(Configuration)
                 .AddWeb(Configuration)
-                .AddIpRateLimiting(Configuration)
-                .AddSwagger() //Hook up swagger
-                .AddAuthentication(Configuration)
-                .AddAuth()
+                .AddSwagger()
                 .AddCors();
         }
 
@@ -46,6 +42,8 @@ namespace Web
             IWebHostEnvironment env,
             ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddSerilogLogging(env);
+
             if (!env.IsDevelopment())
             {
                 app.UseHsts();
@@ -71,14 +69,7 @@ namespace Web
                     });
 
             app.UseIpRateLimiting();
-
-            loggerFactory.AddSerilogLogging(env);
             app.UseErrorHandlingMiddleware();
-
-            //uncomment to use caching
-            //app.UseResponseCaching();
-            //app.UseHttpCacheHeaders();
-
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

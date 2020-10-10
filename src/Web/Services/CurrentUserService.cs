@@ -6,11 +6,11 @@ using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Web.Services
 {
-    public class CurrentUser : ICurrentUser
+    public class CurrentUserService : ICurrentUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CurrentUser(
+        public CurrentUserService(
             IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;

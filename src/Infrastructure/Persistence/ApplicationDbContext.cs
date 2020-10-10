@@ -18,18 +18,18 @@ namespace Infrastructure.Persistence
 {
     public class ApplicationDbContext : DbContext
     {
-        private readonly ICurrentUser _currentUser;
+        private readonly ICurrentUserService _currentUserService;
         private readonly ILoggerFactory _loggerFactory;
         private readonly AuditSettings _auditSettings;
 
         public ApplicationDbContext(
             DbContextOptions options,
-            ICurrentUser currentUser,
+            ICurrentUserService currentUserService,
             ILoggerFactory loggerFactory,
             IOptions<AuditSettings> auditSettings)
             : base(options)
         {
-            _currentUser = currentUser;
+            _currentUserService = currentUserService;
             _loggerFactory = loggerFactory;
             _auditSettings = auditSettings.Value;
         }
@@ -94,8 +94,8 @@ namespace Infrastructure.Persistence
                     {
                         Table = entityEntry.Metadata.GetTableName(),
                         Date = DateTime.Now.ToUniversalTime(),
-                        UserId = _currentUser.Id,
-                        UserName = _currentUser.Name,
+                        UserId = _currentUserService.Id,
+                        UserName = _currentUserService.Name,
                         KeyValues = JsonSerializer.Serialize(
                             entityEntry.Properties.Where(p => p.Metadata.IsPrimaryKey()).ToDictionary(
                                 p => p.Metadata.Name,
@@ -137,8 +137,8 @@ namespace Infrastructure.Persistence
                         {
                             Table = entityEntry.Metadata.GetTableName(),
                             Date = DateTime.Now.ToUniversalTime(),
-                            UserId = _currentUser.Id,
-                            UserName = _currentUser.Name,
+                            UserId = _currentUserService.Id,
+                            UserName = _currentUserService.Name,
                             NewValues = JsonSerializer.Serialize(
                                 entityEntry.Properties.Where(
                                     p => !p.Metadata.IsPrimaryKey() &&
@@ -189,7 +189,7 @@ namespace Infrastructure.Persistence
                 if (entity != null)
                 {
                     var now = DateTime.Now;
-                    var userId = _currentUser.Id;
+                    var userId = _currentUserService.Id;
 
                     if (entry.State == EntityState.Added)
                     {
