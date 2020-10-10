@@ -1,13 +1,14 @@
 using System.Threading.Tasks;
-using Infrastructure.Interfaces;
+using Application.Common.Interfaces;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Web;
 
-namespace Web
+namespace Api
 {
     public class Program
     {

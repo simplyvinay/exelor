@@ -1,7 +1,7 @@
+using Api;
 using Application;
 using AspNetCoreRateLimit;
 using Infrastructure;
-using Infrastructure.Registries;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Web.Registries;
+using Web.OpenAPI;
 
 namespace Web
 {

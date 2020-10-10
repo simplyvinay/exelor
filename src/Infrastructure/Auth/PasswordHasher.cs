@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
+using Application.Common.Auth.Authentication;
 using Application.Common.Interfaces;
 using Microsoft.Extensions.Options;
 
-namespace Application.Common.Auth.Authentication
+namespace Infrastructure.Auth
 {
     public class PasswordHasher : IPasswordHasher
     {

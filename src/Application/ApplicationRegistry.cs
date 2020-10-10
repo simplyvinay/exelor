@@ -8,6 +8,8 @@ using Application.Common.Auth.Authorization;
 using Application.Common.Behaviours;
 using Application.Common.ErrorHandling;
 using Application.Common.Interfaces;
+using AspNetCoreRateLimit;
+using Exelor.Infrastructure.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -113,7 +115,7 @@ namespace Application
             return services;
         }
 
-        public static IServiceCollection AddAuthorization(
+        public static IServiceCollection AddAuth(
             this IServiceCollection services)
         {
             services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
@@ -165,6 +167,20 @@ namespace Application
                 .CreateLogger();
             loggerFactory.AddSerilog(log);
             Log.Logger = log;
+        }
+
+        public static IServiceCollection AddIpRateLimiting(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            //Can be rate limited by Client Id as well
+            //ClientRateLimitOptions
+            services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
+            return services;
         }
 
         public static IApplicationBuilder UseErrorHandlingMiddleware(

@@ -4,11 +4,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Common.Audit;
+using Application.Common.Interfaces;
 using Domain.Common;
 using Domain.Entities.Identity;
-using Domain.Interfaces;
-using Exelor.Application.Common.Audit;
-using Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
@@ -20,20 +19,17 @@ namespace Infrastructure.Persistence
     public class ApplicationDbContext : DbContext
     {
         private readonly ICurrentUser _currentUser;
-        private readonly IPasswordHasher _passwordHasher;
         private readonly ILoggerFactory _loggerFactory;
         private readonly AuditSettings _auditSettings;
 
         public ApplicationDbContext(
             DbContextOptions options,
             ICurrentUser currentUser,
-            IPasswordHasher passwordHasher,
             ILoggerFactory loggerFactory,
             IOptions<AuditSettings> auditSettings)
             : base(options)
         {
             _currentUser = currentUser;
-            _passwordHasher = passwordHasher;
             _loggerFactory = loggerFactory;
             _auditSettings = auditSettings.Value;
         }
@@ -78,7 +74,8 @@ namespace Infrastructure.Persistence
 
             ChangeTracker.DetectChanges();
             var entitiesToTrack = ChangeTracker.Entries().Where(
-                e => !(e.Entity is Domain.Entities.Audit.Audit) && e.State != EntityState.Detached && e.State != EntityState.Unchanged);
+                e => !(e.Entity is Domain.Entities.Audit.Audit) && e.State != EntityState.Detached &&
+                     e.State != EntityState.Unchanged);
 
             foreach (var entityEntry in entitiesToTrack.Where(e => !e.Properties.Any(p => p.IsTemporary)))
             {

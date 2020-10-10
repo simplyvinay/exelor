@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using Infrastructure.Swagger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Infrastructure.Registries
+namespace Web.OpenAPI
 {
     public static class SwaggerRegistry 
     {

@@ -1,6 +1,8 @@
 version: '3.7'
 
 services:
+  web:
+    build: .
   db:
     image: ${DB_IMAGE}
     ports: 

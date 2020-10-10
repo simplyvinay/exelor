@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Application.Common.Auth.Authentication;
 using Application.Common.Auth.Authorization;
 using Application.Common.Interfaces;
 using Domain.Enums;
@@ -11,7 +12,7 @@ using Domain.Helpers;
 using Microsoft.Extensions.Options;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
-namespace Application.Common.Auth.Authentication
+namespace Infrastructure.Auth
 {
     public class JwtTokenGenerator : IJwtTokenGenerator
     {
