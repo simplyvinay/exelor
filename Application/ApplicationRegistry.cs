@@ -7,7 +7,6 @@ using Application.Common.Auth.Authentication;
 using Application.Common.Auth.Authorization;
 using Application.Common.Behaviours;
 using Application.Common.ErrorHandling;
-using Application.Common.Interfaces;
 using AspNetCoreRateLimit;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

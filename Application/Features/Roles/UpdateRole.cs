@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Application.Common.ErrorHandling;
 using Application.Common.Interfaces;
 using Domain.Enums;
-using Exelor.Dto;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

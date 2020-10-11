@@ -1,32 +1,29 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
+using Application.Common.Auth.Authorization;
+using Application.Common.ErrorHandling;
+using Application.Common.Extensions;
+using Application.Common.Interfaces;
 using Application.Features.Users;
-using Exelor.Application.Features.Users;
-using Exelor.Domain.Identity;
-using Exelor.Dto;
-using Exelor.Helpers;
-using Exelor.Helpers.Extensions;
-using Exelor.Infrastructure.Auth.Authentication;
-using Exelor.Infrastructure.Auth.Authorization;
-using Exelor.Infrastructure.ErrorHandling;
+using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Exelor.Features.Users
+namespace Web.Features.Users
 {
     [ApiVersion("1")]
     [Route("api/v{version:ApiVersion}/users")]
     public class UsersController
     {
-        private readonly ICurrentUser _currentUser;
         private readonly IMediator _mediator;
+        private readonly ICurrentUserService _currentUserService;
 
         public UsersController(
-            ICurrentUser currentUser,
-            IMediator mediator)
+            IMediator mediator,
+            ICurrentUserService currentUserService)
         {
-            _currentUser = currentUser;
             _mediator = mediator;
+            _currentUserService = currentUserService;
         }
 
         [HttpGet]
@@ -44,7 +41,7 @@ namespace Exelor.Features.Users
         public async Task<UserDetailsDto> Edit(
             [FromBody] UpdateUser.Command command)
         {
-            if (!_currentUser.IsAllowed(Permissions.EditUsers))
+            if (!_currentUserService.IsAllowed(Permissions.EditUsers))
                 throw new HttpException(HttpStatusCode.Forbidden);
 
             return await _mediator.Send(command);
@@ -55,7 +52,7 @@ namespace Exelor.Features.Users
         public async Task Delete(
             int id)
         {
-            _currentUser.Authorize(Permissions.EditUsers);
+            _currentUserService.Authorize(Permissions.EditUsers);
             await _mediator.Send(new DeleteUser.Command(id));
         }
     }

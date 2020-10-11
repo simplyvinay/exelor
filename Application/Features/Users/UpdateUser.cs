@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
-using Exelor.Dto;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

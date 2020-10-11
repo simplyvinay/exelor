@@ -3,12 +3,10 @@ using System.Threading.Tasks;
 using Application.Common.Auth.Authorization;
 using Application.Features.Roles;
 using Domain.Enums;
-using Exelor.Application.Features.Roles;
-using Exelor.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Exelor.Features.Roles
+namespace Web.Features.Roles
 {
     [ApiVersion("1")]
     [ApiVersion("2")]

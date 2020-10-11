@@ -1,4 +1,4 @@
-﻿namespace Exelor.Dto
+﻿namespace Application.Features.Roles
 {
     public class RoleDto
     {

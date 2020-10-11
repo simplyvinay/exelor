@@ -1,12 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Application.Features.Auth;
-using Exelor.Application.Features.Auth;
-using Exelor.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Exelor.Features.Auth
+namespace Web.Features.Auth
 {
     [ApiVersion("1")]
     [ApiVersion("2")]

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Application.Common.Extensions;
 using Application.Common.Interfaces;
-using Exelor.Dto;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
