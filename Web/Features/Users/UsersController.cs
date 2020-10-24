@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
+using Application.Common;
 using Application.Common.Auth.Authorization;
 using Application.Common.ErrorHandling;
 using Application.Common.Extensions;

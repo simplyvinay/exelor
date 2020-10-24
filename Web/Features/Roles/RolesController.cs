@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Common;
 using Application.Common.Auth.Authorization;
 using Application.Features.Roles;
 using Domain.Enums;
