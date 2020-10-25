@@ -1,4 +1,3 @@
-using Api;
 using Application;
 using AspNetCoreRateLimit;
 using Infrastructure;

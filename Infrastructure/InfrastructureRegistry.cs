@@ -17,6 +17,9 @@ namespace Infrastructure
                 op => op
                     .UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
                     .UseLowerCaseNamingConvention());
+
+            services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Application.Common;
 using Application.Common.Audit;
 using Application.Common.Auth.Authentication;
 using Application.Common.Auth.Authorization;
@@ -9,6 +11,7 @@ using Application.Common.Behaviours;
 using Application.Common.ErrorHandling;
 using AspNetCoreRateLimit;
 using MediatR;
+using MediatR.Pipeline;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -20,6 +23,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace Application
 {
@@ -31,11 +36,17 @@ namespace Application
             IConfiguration configuration)
         {
             services
+                .AddMediatR(Assembly.GetExecutingAssembly())
+                .AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>))
+                .AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>))
+                .AddTransient(typeof(IRequestPreProcessor<>), typeof(LoggingBehaviour<>))
                 .AddValidationPipeline()
                 .AddAudit(configuration)
                 .AddAuthentication(configuration)
                 .AddAuthorization()
-                .AddIpRateLimiting(configuration);
+                .AddIpRateLimiting(configuration)
+                .Configure<SieveOptions>(configuration.GetSection("Sieve"))
+                .AddScoped<ISieveProcessor, ApplicationSieveProcessor>();
 
             return services;
         }
