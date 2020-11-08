@@ -58,8 +58,8 @@ namespace Application.Features.Users
                     .FirstAsync(
                     x => x.Id == request.Id,
                     cancellationToken);
-                user.FirstName = request.FirstName;
-                user.LastName = request.LastName;
+
+                user.Update(request.FirstName, request.LastName);
 
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
@@ -69,7 +69,16 @@ namespace Application.Features.Users
                     user.LastName, 
                     user.FullName,
                     user.Email,
-                    string.Join(", ", user.Roles.Select(r => r.Role.Name)));
+                    string.Join(", ", user.Roles.Select(r => r.Role.Name)),
+                    new AddressDetailDto(
+                        user?.Address?.Address1,
+                        user?.Address?.Address2,
+                        user?.Address?.Street,
+                        user?.Address?.City,
+                        user?.Address?.State,
+                        user?.Address?.Country,
+                        user?.Address?.ZipCode
+                    ));
             }
         }
     }

@@ -61,7 +61,16 @@ namespace Application.Features.Users
                             user.Email,
                             string.Join(
                                 ", ",
-                                user.Roles.Select(r => r.Role.Name)))
+                                user.Roles.Select(r => r.Role.Name)),
+                            new AddressDetailDto(
+                                user?.Address?.Address1,
+                                user?.Address?.Address2,
+                                user?.Address?.Street,
+                                user?.Address?.City,
+                                user?.Address?.State,
+                                user?.Address?.Country,
+                                user?.Address?.ZipCode
+                            ))
                     ).ToList();
                 return userDetailsDtos.ShapeData(message.ResourceParams.Fields);
             }

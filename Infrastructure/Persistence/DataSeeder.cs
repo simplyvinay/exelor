@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Domain.Entities.Identity;
 using Domain.Enums;
+using Domain.ValueObjects;
 
 namespace Infrastructure.Persistence
 {
@@ -27,7 +28,8 @@ namespace Infrastructure.Persistence
                     passwordHasher.Hash(
                         "test",
                         salt),
-                    salt
+                    salt,
+                    new Address()
                 );
                 context.Users.Add(user1);
 
@@ -47,7 +49,8 @@ namespace Infrastructure.Persistence
                     passwordHasher.Hash(
                         "test",
                         salt),
-                    salt
+                    salt,
+                    new Address()
                 );
                 context.Users.Add(user2);
 

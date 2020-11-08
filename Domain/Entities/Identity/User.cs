@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using Domain.Common;
+using Domain.ValueObjects;
 
 namespace Domain.Entities.Identity
 {
@@ -17,7 +18,8 @@ namespace Domain.Entities.Identity
             string userName,
             string phoneNumber,
             byte[] hash,
-            byte[] salt)
+            byte[] salt,
+            Address address)
         {
             FirstName = firstName;
             LastName = lastName;
@@ -27,25 +29,35 @@ namespace Domain.Entities.Identity
             PhoneNumber = phoneNumber;
             Hash = hash;
             Salt = salt;
+            Address = address;
         }
 
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string FullName { get; set; }
-        public string Email { get; set; }
-        public string UserName { get; set; }
-        public string PhoneNumber { get; set; }
-        public string TwoFactorEnabled { get; set; }
+        public string FirstName { get; private set; }
+        public string LastName { get; private set; }
+        public string FullName { get; }
+        public string Email { get; }
+        public string UserName { get; }
+        public string PhoneNumber { get; }
+        public string TwoFactorEnabled { get; }
         [JsonIgnore]
         [DoNotAudit]
-        public byte[] Hash { get; set; }
+        public byte[] Hash { get; }
 
         [JsonIgnore]
         [DoNotAudit]
-        public byte[] Salt { get; set; }
+        public byte[] Salt { get; }
 
         public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
         public ICollection<UserRole> Roles { get; } = new HashSet<UserRole>();
+        public Address Address { get; set; }
+
+        public void Update(
+            string firstName,
+            string lastName)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+        }
 
         public void AddRefreshToken(
             string token,

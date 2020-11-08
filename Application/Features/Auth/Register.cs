@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Common.ErrorHandling;
 using Application.Common.Interfaces;
 using Domain.Entities.Identity;
+using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -94,7 +95,8 @@ public class Register
                     _passwordHasher.Hash(
                         "test",
                         salt),
-                    salt);
+                    salt,
+                    new Address());
 
                 await _context.Users.AddAsync(
                     newUser,

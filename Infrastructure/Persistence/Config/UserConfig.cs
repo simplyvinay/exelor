@@ -13,6 +13,8 @@ namespace Infrastructure.Persistence.Config
                 .Metadata.FindNavigation(nameof(User.RefreshTokens));
             navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
 
+            builder.OwnsOne(o => o.Address);
+
             builder
                 .HasMany(a => a.Roles)
                 .WithOne(a => a.User)
