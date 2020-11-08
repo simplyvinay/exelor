@@ -11,6 +11,11 @@ namespace Domain.Entities.Identity
     {
         private readonly List<RefreshToken> _refreshTokens = new List<RefreshToken>();
 
+        public User()
+        {
+            
+        }
+
         public User(
             string firstName,
             string lastName,
@@ -34,18 +39,18 @@ namespace Domain.Entities.Identity
 
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
-        public string FullName { get; }
-        public string Email { get; }
-        public string UserName { get; }
-        public string PhoneNumber { get; }
-        public string TwoFactorEnabled { get; }
+        public string FullName { get; private set; }
+        public string Email { get; private set; }
+        public string UserName { get; private set; }
+        public string PhoneNumber { get; private set; }
+        public string TwoFactorEnabled { get; private set; }
         [JsonIgnore]
         [DoNotAudit]
-        public byte[] Hash { get; }
+        public byte[] Hash { get; private set; }
 
         [JsonIgnore]
         [DoNotAudit]
-        public byte[] Salt { get; }
+        public byte[] Salt { get; private set; }
 
         public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
         public ICollection<UserRole> Roles { get; } = new HashSet<UserRole>();

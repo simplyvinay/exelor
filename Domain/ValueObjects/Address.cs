@@ -28,13 +28,13 @@ namespace Domain.ValueObjects
             UpdateFullAddress();
         }
 
-        public string Address1 { get; }
-        public string Address2 { get; }
-        public string Street { get; }
-        public string City { get; }
-        public string State { get; }
-        public string Country { get; }
-        public string ZipCode { get; }
+        public string Address1 { get; private set; }
+        public string Address2 { get; private set; }
+        public string Street { get; private set; }
+        public string City { get; private set; }
+        public string State { get; private set; }
+        public string Country { get; private set; }
+        public string ZipCode { get; private set; }
         public string FullAddress { get; private set; }
 
         private void UpdateFullAddress()

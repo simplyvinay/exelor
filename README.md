@@ -128,6 +128,9 @@ GET /Roles
 
 # Run using docker
 
+- Add and run migrations
+  - Install `ef` tool by running `dotnet tool install --global dotnet-ef`
+  - Run `dotnet ef migrations add "Init" --project Infrastructure --startup-project Web --output-dir Persistence\Migrations`
 - Go to the root folder of the project and run `docker-compose up`
 - You can view the API reference at `http://localhost:5000/swagger`
 - Login using `{ "userName": "john",  "password": "test" }` for ReadUsers permission and `{  "userName": "jane",  "password": "test" }` for SuperUser permission
