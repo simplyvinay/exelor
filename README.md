@@ -4,13 +4,14 @@
 - [Tech Stack](#Tech-Stack)
 - [Features](#Features)
 - [Local Building](#Local-Building)
+- [Run using docker](#Run-using-docker)
 - [Config](#Config)
 - [How to Contribute](#How-to-Contribute)
 - [License](#License)
 
 # Exelor
 
-Exelor is a lightweight .net core api framework that includes jwt authentication with refresh token support, permission authorisation, auditing, logging, error handling, fluent validation, swagger, caching, data shaping and rate limiting
+Exelor is a lightweight .net core api framework that includes jwt authentication with refresh token support, permission authorisation, auditing, logging, error handling, fluent validation, data shaping and rate limiting with Open API spec via swagger
 
 # Tech Stack
 
@@ -21,7 +22,6 @@ Exelor is a lightweight .net core api framework that includes jwt authentication
 - [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) for Swagger
 - [ASP.NET Core JWT Bearer Authentication](https://github.com/aspnet/Security) for [JWT](https://jwt.io/) authentication with support for [refresh tokens](https://tools.ietf.org/html/rfc6749#section-1.5).
 - [Serilog](https://github.com/serilog/serilog) for logging
-- [Marvin.Cache.Headers](https://github.com/KevinDockx/HttpCacheHeaders) to add caching headers to responses
 - [AspNetCoreRateLimit](https://github.com/stefanprodan/AspNetCoreRateLimit) to add rate limiting functionality
 - [Sieve](https://github.com/Biarity/Sieve) to add paging, sorting and filtering functionality 
 
@@ -116,12 +116,19 @@ GET /Roles
 
 # Local Building
 
-- Install [.NET Core SDK](https://dotnet.microsoft.com/download)
-- Go to exelor folder and run `dotnet restore` and `dotnet build`
-- Add and run migrations 
-  - Install `ef` tool by running `dotnet tool install --global dotnet-ef`
-  - Run `dotnet ef migrations add Init` and then `dotnet ef database update`
-- Run `dotnet run` to start the server at `http://localhost:5000/`
+- ~~Install [.NET Core SDK](https://dotnet.microsoft.com/download)~~
+- ~~Go to exelor folder and run `dotnet restore` and `dotnet build`~~
+- ~~Add and run migrations~~
+  - ~~Install `ef` tool by running `dotnet tool install --global dotnet-ef`~~
+  - ~~Run `dotnet ef migrations add Init` and then `dotnet ef database update`~~
+- ~~Run `dotnet run` to start the server at `http://localhost:5000/`~~
+- ~~You can view the API reference at `http://localhost:5000/swagger`~~
+- ~~Login using `{ "userName": "john",  "password": "test" }` for ReadUsers permission and `{  "userName": "jane",  "password": "test" }` for SuperUser permission~~
+
+
+# Run using docker
+
+- Go to the root folder of the project and run `docker-compose up`
 - You can view the API reference at `http://localhost:5000/swagger`
 - Login using `{ "userName": "john",  "password": "test" }` for ReadUsers permission and `{  "userName": "jane",  "password": "test" }` for SuperUser permission
 
