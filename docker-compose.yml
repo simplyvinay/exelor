@@ -5,18 +5,21 @@ networks:
     driver: bridge
 
 services:
-  web:
+  exelor_api:
+    image: exelor_api
+    container_name: exelor_api
     build:
       context: .
       dockerfile: Dockerfile
     depends_on:
       - "exelor_db"
     ports:
-      - 5000:6000
+      - 5000:5000
     networks:
       - exelor
   exelor_db:
     image: ${DB_IMAGE}
+    container_name: exelor_db
     ports:
       - ${HOST_PORT}:${LOCAL_PORT}
     volumes:
