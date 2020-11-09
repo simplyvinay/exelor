@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
+using Domain.Common;
 using Domain.Entities.Identity;
 using Domain.Enums;
 using Domain.ValueObjects;
@@ -31,14 +32,17 @@ namespace Infrastructure.Persistence
                     salt,
                     new Address()
                 );
-                context.Users.Add(user1);
+
+                user1.CustomFields = new[] { new CustomField("Age", "35") };
+
+                await context.Users.AddAsync(user1);
 
                 var role1 = new Role("Base User");
                 role1.AddPermissions(new List<Permissions> {Permissions.ReadUsers});
-                context.Roles.Add(role1);
+                await context.Roles.AddAsync(role1);
 
                 var userRole1 = new UserRole(user1, role1);
-                context.UserRoles.Add(userRole1);
+                await context.UserRoles.AddAsync(userRole1);
                 
                 var user2 = new User(
                     "Jane",
@@ -52,14 +56,14 @@ namespace Infrastructure.Persistence
                     salt,
                     new Address()
                 );
-                context.Users.Add(user2);
+                await context.Users.AddAsync(user2);
 
                 var role2 = new Role("Super User");
                 role2.AddPermissions(new List<Permissions> {Permissions.SuperUser});
-                context.Roles.Add(role2);
+                await context.Roles.AddAsync(role2);
 
                 var userRole2 = new UserRole(user2, role2);
-                context.UserRoles.Add(userRole2);
+                await context.UserRoles.AddAsync(userRole2);
                 
                 await context.SaveChangesAsync();
             }

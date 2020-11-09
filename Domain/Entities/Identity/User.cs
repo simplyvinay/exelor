@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using Domain.Common;
+using Domain.Interfaces;
 using Domain.ValueObjects;
 
 namespace Domain.Entities.Identity
 {
-    public class User : Entity
+    public class User : Entity, IHaveCustomFields
     {
         private readonly List<RefreshToken> _refreshTokens = new List<RefreshToken>();
 
@@ -26,12 +27,9 @@ namespace Domain.Entities.Identity
             byte[] salt,
             Address address)
         {
-            FirstName = firstName;
-            LastName = lastName;
-            FullName = $"{FirstName} {LastName}";
+            Update(firstName, lastName, phoneNumber);
             Email = email;
             UserName = userName;
-            PhoneNumber = phoneNumber;
             Hash = hash;
             Salt = salt;
             Address = address;
@@ -52,16 +50,21 @@ namespace Domain.Entities.Identity
         [DoNotAudit]
         public byte[] Salt { get; private set; }
 
+        public Address Address { get; set; }
+        public CustomField[] CustomFields { get; set; }
+
         public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
         public ICollection<UserRole> Roles { get; } = new HashSet<UserRole>();
-        public Address Address { get; set; }
 
         public void Update(
             string firstName,
-            string lastName)
+            string lastName,
+            string phoneNumber)
         {
             FirstName = firstName;
             LastName = lastName;
+            FullName = $"{FirstName} {LastName}";
+            PhoneNumber = phoneNumber;
         }
 
         public void AddRefreshToken(

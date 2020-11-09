@@ -13,12 +13,13 @@ namespace Infrastructure.Persistence.Config
                 .Metadata.FindNavigation(nameof(User.RefreshTokens));
             navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
 
-            builder.OwnsOne(o => o.Address);
-
+            builder.OwnsOne(u => u.Address);
+            builder.Property(u => u.CustomFields)
+                .HasColumnType("jsonb");
             builder
-                .HasMany(a => a.Roles)
-                .WithOne(a => a.User)
-                .HasForeignKey(a => a.UserId);
+                .HasMany(u => u.Roles)
+                .WithOne(u => u.User)
+                .HasForeignKey(u => u.UserId);
 
         }
     }

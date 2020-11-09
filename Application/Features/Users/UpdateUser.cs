@@ -59,7 +59,7 @@ namespace Application.Features.Users
                     x => x.Id == request.Id,
                     cancellationToken);
 
-                user.Update(request.FirstName, request.LastName);
+                user.Update(request.FirstName, request.LastName, user.PhoneNumber);
 
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
