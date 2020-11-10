@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using Domain.Common;
@@ -51,7 +52,7 @@ namespace Domain.Entities.Identity
         public byte[] Salt { get; private set; }
 
         public Address Address { get; set; }
-        public CustomField[] CustomFields { get; set; }
+        public CustomField[] CustomFields { get; set; } = new CustomField[0];
 
         public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
         public ICollection<UserRole> Roles { get; } = new HashSet<UserRole>();

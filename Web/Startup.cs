@@ -27,10 +27,9 @@ namespace Web
             IServiceCollection services)
         {
             services
-                .AddMediatR(typeof(Startup))
-                .AddApplicationRegistry(Configuration)
-                .AddInfrastructure(Configuration)
                 .AddWeb(Configuration)
+                .AddInfrastructure(Configuration)
+                .AddApplicationRegistry(Configuration)
                 .AddSwagger()
                 .AddCors();
         }

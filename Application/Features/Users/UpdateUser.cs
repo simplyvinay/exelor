@@ -70,6 +70,7 @@ namespace Application.Features.Users
                     user.FullName,
                     user.Email,
                     string.Join(", ", user.Roles.Select(r => r.Role.Name)),
+                    user.CustomFields,
                     new AddressDetailDto(
                         user?.Address?.Address1,
                         user?.Address?.Address2,

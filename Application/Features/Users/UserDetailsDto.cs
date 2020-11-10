@@ -1,4 +1,9 @@
-﻿namespace Application.Features.Users
+﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using Domain.Common;
+
+namespace Application.Features.Users
 {
     public class UserDetailsDto
     {
@@ -13,6 +18,7 @@
             string fullName,
             string email,
             string roles,
+            CustomField[] customFields,
             AddressDetailDto address)
         {
             Id = id;
@@ -21,6 +27,7 @@
             FullName = fullName;
             Email = email;
             Roles = roles;
+            CustomFields = customFields.ToDto();
             Address = address;
         }
 
@@ -31,6 +38,21 @@
         public string Email { get; }
         public string Roles { get; }
         public AddressDetailDto Address { get; }
+        public object CustomFields { get; set; }
+    }
+
+    public static class Helper
+    {
+        public static ExpandoObject ToDto(
+            this CustomField[] customFields)
+        {
+            var x = new ExpandoObject() as IDictionary<string, Object>;
+            foreach (var customField in customFields)
+            {
+                x.Add(customField.Name, customField.Value);
+            }
+            return (ExpandoObject) x;
+        }
     }
 
     public class AddressDetailDto

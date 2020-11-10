@@ -2,6 +2,11 @@
 {
     public class CustomField
     {
+        public CustomField()
+        {
+            
+        }
+
         public CustomField(
             string name,
             string value)
