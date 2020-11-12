@@ -19,7 +19,7 @@ namespace Domain.ValueObjects
             string zipcode)
         {
             Address1 = address1 ?? string.Empty;
-            Address2 = address2?? string.Empty;
+            Address2 = address2 ?? string.Empty;
             Street = street?? string.Empty;
             City = city?? string.Empty;
             State = state?? string.Empty;

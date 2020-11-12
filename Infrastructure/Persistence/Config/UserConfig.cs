@@ -13,7 +13,12 @@ namespace Infrastructure.Persistence.Config
                 .Metadata.FindNavigation(nameof(User.RefreshTokens));
             navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
 
-            builder.OwnsOne(u => u.Address);
+            builder.OwnsOne(u => u.Address,
+                ua =>
+                {
+                    ua.Property(x => x.Address1).HasColumnName("address_address1");
+                    ua.Property(x => x.Address2).HasColumnName("address_address2");
+                });
             builder.Property(u => u.CustomFields)
                 .HasColumnType("jsonb");
             builder
