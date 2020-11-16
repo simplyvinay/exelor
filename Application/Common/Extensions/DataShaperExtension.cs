@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using Domain.Interfaces;
 
 namespace Application.Common.Extensions
 {
@@ -13,7 +14,9 @@ namespace Application.Common.Extensions
             string fields)
         {
             var filteredProperties = GetProperties<TSource>(fields);
-            return GetData(source, filteredProperties);
+            return GetData(
+                source,
+                filteredProperties);
         }
 
         public static IEnumerable<ExpandoObject> ShapeData<TSource>(
@@ -21,7 +24,8 @@ namespace Application.Common.Extensions
             string fields)
         {
             var filteredProperties = GetProperties<TSource>(fields);
-            return sources.Select(source => GetData(
+            return sources.Select(
+                    source => GetData(
                         source,
                         filteredProperties))
                 .ToList();
@@ -40,6 +44,13 @@ namespace Application.Common.Extensions
                     propertyValue);
             }
 
+            if (typeof(IHaveCustomFields).IsAssignableFrom(typeof(TSource)))
+            {
+                MapCustomFields(
+                    (IHaveCustomFields) source,
+                    shapedObject);
+            }
+
             return shapedObject;
         }
 
@@ -48,6 +59,11 @@ namespace Application.Common.Extensions
         {
             var properties = typeof(TSource)
                 .GetProperties(BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            var customFieldProperties = typeof(IHaveCustomFields).GetProperties();
+
+            //ignore custom field properties here as they will shaped as individual properties
+            properties = properties.Where(x => customFieldProperties.Any(y => y.Name != x.Name)).ToArray();
 
             var filteredProperties = new List<PropertyInfo>();
             if (!string.IsNullOrWhiteSpace(fields))
@@ -58,10 +74,12 @@ namespace Application.Common.Extensions
                 {
                     var propertyName = field.Trim();
                     var property = properties.FirstOrDefault(
-                        pi => pi.Name.Equals(propertyName,
+                        pi => pi.Name.Equals(
+                            propertyName,
                             StringComparison.InvariantCultureIgnoreCase));
                     if (property == null)
-                        throw new Exception($"Property {propertyName} not found");;
+                        throw new Exception($"Property {propertyName} not found");
+                    ;
                     filteredProperties.Add(property);
                 }
             }
@@ -71,6 +89,20 @@ namespace Application.Common.Extensions
             }
 
             return filteredProperties;
+        }
+
+        private static ExpandoObject MapCustomFields(
+            IHaveCustomFields customFieldObject,
+            ExpandoObject expandoObject)
+        {
+            foreach (var customField in customFieldObject.CustomFields)
+            {
+                expandoObject.TryAdd(
+                    customField.Name,
+                    customField.Value);
+            }
+
+            return expandoObject;
         }
     }
 }

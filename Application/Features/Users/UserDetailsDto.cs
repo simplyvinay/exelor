@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using Application.Common.Interfaces;
-using Domain.Common;
+﻿using Domain.Common;
+using Domain.Interfaces;
 
 namespace Application.Features.Users
 {
-    public class UserDetailsDto : IHaveCustomFieldsDto
+    public class UserDetailsDto : IHaveCustomFields
     {
         protected UserDetailsDto()
         {
@@ -40,20 +37,6 @@ namespace Application.Features.Users
         public string Roles { get; }
         public AddressDetailDto Address { get; }
         public CustomField[] CustomFields { get; set; }
-    }
-
-    public static class Helper
-    {
-        public static ExpandoObject ToDto(
-            this CustomField[] customFields)
-        {
-            var x = new ExpandoObject() as IDictionary<string, Object>;
-            foreach (var customField in customFields)
-            {
-                x.Add(customField.Name, customField.Value);
-            }
-            return (ExpandoObject) x;
-        }
     }
 
     public class AddressDetailDto
