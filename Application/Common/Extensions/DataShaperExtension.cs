@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using Domain.Common;
 using Domain.Interfaces;
 
 namespace Application.Common.Extensions
@@ -95,14 +96,18 @@ namespace Application.Common.Extensions
             IHaveCustomFields customFieldObject,
             ExpandoObject expandoObject)
         {
+            dynamic obj = expandoObject;
+            obj.CustomFields = new List<dynamic>();
             foreach (var customField in customFieldObject.CustomFields)
             {
-                expandoObject.TryAdd(
+                var cf = new ExpandoObject();
+                cf.TryAdd(
                     customField.Name,
                     customField.Value);
+                obj.CustomFields.Add(cf);
             }
 
-            return expandoObject;
+            return obj;
         }
     }
 }
