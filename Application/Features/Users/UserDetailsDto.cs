@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using Application.Common.Interfaces;
 using Domain.Common;
 
 namespace Application.Features.Users
 {
-    public class UserDetailsDto
+    public class UserDetailsDto : IHaveCustomFieldsDto
     {
         protected UserDetailsDto()
         {
@@ -27,7 +28,7 @@ namespace Application.Features.Users
             FullName = fullName;
             Email = email;
             Roles = roles;
-            CustomFields = customFields.ToDto();
+            CustomFields = customFields;
             Address = address;
         }
 
@@ -38,7 +39,7 @@ namespace Application.Features.Users
         public string Email { get; }
         public string Roles { get; }
         public AddressDetailDto Address { get; }
-        public object CustomFields { get; set; }
+        public CustomField[] CustomFields { get; set; }
     }
 
     public static class Helper

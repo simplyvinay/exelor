@@ -72,7 +72,7 @@ namespace Application.Features.Users
                                 user?.Address?.Country,
                                 user?.Address?.ZipCode
                             ))
-                    ).ToList();
+                    );
                 return userDetailsDtos.ShapeData(message.ResourceParams.Fields);
             }
         }
