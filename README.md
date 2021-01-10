@@ -138,8 +138,8 @@ GET /Roles
 # Config
 
 #### ConnectionStrings
-- `DefaultConnection`: `Server=localhost;Database=starter;Trusted_Connection=True;MultipleActiveResultSets=true`
-  - SQL connection string, a default database called starter is created when you run migrations
+- `DefaultConnection`: `Server=exelor_db;Port=5432;Database=starter;Uid=su;Pwd=YourStrong!Passw0rd`
+  - Postgres connection string, a default database called starter is created when you run migrations
 
 #### JwtSettings
 
